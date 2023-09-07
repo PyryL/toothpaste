@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Read paste &ndash; ToothPaste</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="utf-8">
+    </head>
+    <body>
+        <h1>Read paste</h1>
+        <form method="POST" action="/paste">
+            <input type="text" name="title" placeholder="Paste title" minlength="1" {{ fieldsDisabled }} value="{{ pasteTitle }}"><br>
+            <textarea name="content" rows="8" cols="30" placeholder="Paste here..." {{ fieldsDisabled }}>{{ pasteContent }}</textarea><br>
+            <input type="submit" value="Save" {{ fieldsDisabled }}>
+        </form>
+    </body>
+</html>
