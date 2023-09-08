@@ -1,9 +1,10 @@
-from flask import Flask, render_template, redirect, request
+from flask import Flask, render_template, redirect, request, session
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import text
 from os import getenv
 
 app = Flask(__name__)
+app.secret_key = getenv("SESSION_SECRET_KEY")
 app.config["SQLALCHEMY_DATABASE_URI"] = getenv("DATABASE_URL")
 db = SQLAlchemy(app)
 
@@ -43,3 +44,24 @@ def newPaste():
         fieldsDisabled="",
         pasteTitle="",
         pasteContent="",)
+
+@app.route("/log-in", methods=["GET"])
+def getLogIn():
+    # if user is already logged in, redirect to the front page
+    if "userid" in session:
+        return redirect("/")
+    return render_template("login.html")
+
+@app.route("/log-in", methods=["POST"])
+def postLogIn():
+    # check credentials
+    sql = "SELECT id AS userid FROM users WHERE username=:username AND password_hash=crypt(:password, password_hash)"
+    parameters = { "username": request.form["username"], "password": request.form["password"] }
+    result = db.session.execute(text(sql), parameters)
+
+    # incorrect username and/or password
+    if result.rowcount != 1:
+        return redirect("/log-in")
+
+    session["userid"] = result.fetchone().userid
+    return redirect("/")
