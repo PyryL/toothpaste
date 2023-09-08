@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>ToothPaste</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="utf-8">
+    </head>
+    <body>
+        <h1>ToothPaste</h1>
+        <a href="/new-paste">+ Create new paste</a>
+        <ul>
+            {% for paste in pastes %}
+            <li>
+                <a href="/paste/{{ paste.id }}">{{ paste.title }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </body>
+</html>
