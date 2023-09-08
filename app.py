@@ -25,12 +25,24 @@ def readPaste(id):
 
     return render_template("paste.html",
         header="Read paste",
+        existingId=id,
         fieldsDisabled="" if has_edit_permission else "disabled",
         pasteTitle=paste.title,
         pasteContent=paste.content,)
 
 @app.route("/paste", methods=["POST"])
 def pastesPost():
+    # if this is editing, check that user has edit permissions
+    if request.form["existingId"] != "":
+        if "userid" not in session:
+            return "401 not logged in"
+        sql = "SELECT owner FROM pastes WHERE id=:pasteId"
+        result = db.session.execute(text(sql), { "pasteId": request.form["existingId"] })
+        if result.rowcount != 1:
+            return "404 invalid paste id"
+        if result.fetchone().owner != session["userid"]:
+            return "403 you are not the owner"
+
     sql = "INSERT INTO pastes (title, content, owner) VALUES (:title, :content, :owner) RETURNING id"
     values = {
         "title": request.form["title"],
