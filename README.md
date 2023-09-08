@@ -9,3 +9,15 @@ ToothPaste has two kinds of users: registered and anonymous. Most of the feature
 There are many levels of privacy on ToothPaste. A paste can be completely public and listed on the front page, or it can be hidden and only available with a direct link. Paste can also be set to be only available to its original logged-in owner. Unlisted paste can also be encrypted for additional security, in which case all users are required to enter a decryption key.
 
 Original owner of a paste can grant edit permissions to other users, as well. Anyone who is able to view the paste can see and write chat messages, while original paste owner can also remove them. Logged-in viewers can also give one up or down vote for the paste.
+
+## Installation
+
+### `.env`
+
+Create a file called `.env` in the project root directory and set its contents as follows:
+
+```
+DATABASE_URL=<POSTGRESQL>
+```
+
+Replace `<POSTGRESQL>` with your database URL (propably something like `postgresql:///yourname`).
