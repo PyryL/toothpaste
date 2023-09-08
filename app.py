@@ -30,8 +30,12 @@ def readPaste(id):
 
 @app.route("/paste", methods=["POST"])
 def pastesPost():
-    sql = "INSERT INTO pastes (title, content) VALUES (:title, :content) RETURNING id"
-    values = { "title": request.form["title"], "content": request.form["content"] }
+    sql = "INSERT INTO pastes (title, content, owner) VALUES (:title, :content, :owner) RETURNING id"
+    values = {
+        "title": request.form["title"],
+        "content": request.form["content"],
+        "owner": session["userid"] if "userid" in session else None
+    }
     result = db.session.execute(text(sql), values)
     db.session.commit()
     new_id = result.fetchone().id
