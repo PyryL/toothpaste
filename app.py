@@ -8,7 +8,9 @@ db = SQLAlchemy(app)
 
 @app.route("/")
 def index():
-    return "<h1>ToothPaste</h1>"
+    sql = "SELECT id, title FROM pastes ORDER BY modification_date DESC LIMIT 10"
+    pastes = db.session.execute(text(sql)).fetchall()
+    return render_template("frontpage.html", pastes=pastes)
 
 @app.route("/paste/<string:id>", methods=["GET"])
 def readPaste(id):
