@@ -16,15 +16,16 @@ def index():
 
 @app.route("/paste/<string:id>", methods=["GET"])
 def readPaste(id):
-    sql = "SELECT title, content FROM pastes WHERE id=:id"
+    sql = "SELECT title, content, owner FROM pastes WHERE id=:id"
     result = db.session.execute(text(sql), { "id": id })
     if result.rowcount != 1:
         return "404 paste not found"
     paste = result.fetchone()
+    has_edit_permission = "userid" in session and session["userid"] == paste.owner
 
     return render_template("paste.html",
         header="Read paste",
-        fieldsDisabled="disabled",
+        fieldsDisabled="" if has_edit_permission else "disabled",
         pasteTitle=paste.title,
         pasteContent=paste.content,)
 
