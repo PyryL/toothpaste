@@ -18,6 +18,9 @@ Create a file called `.env` in the project root directory and set its contents a
 
 ```
 DATABASE_URL=<POSTGRESQL>
+SESSION_SECRET_KEY=<SESSIONSECRET>
 ```
 
 Replace `<POSTGRESQL>` with your database URL (propably something like `postgresql:///yourname`).
+
+Replace `<SESSIONSECRET>` with a secret random string.
