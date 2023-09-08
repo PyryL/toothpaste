@@ -9,6 +9,13 @@
         <h1>{{ header }}</h1>
         <form method="POST" action="/paste">
             <input type="hidden" name="existingId" value="{{ existingId }}">
+            <p>
+                <select name="publicity" {{ fieldsDisabled }}>
+                    <option disabled>-- Publicity --</option>
+                    <option value="listed" {{ 'selected' if pastePublicity == 'listed' else '' }}>Listed on the front page</option>
+                    <option value="private" {{ 'selected' if pastePublicity == 'private' else '' }}>Only for you</option>
+                </select>
+            </p>
             <input type="text" name="title" placeholder="Paste title" minlength="1" {{ fieldsDisabled }} value="{{ pasteTitle }}"><br>
             <textarea name="content" rows="8" cols="30" placeholder="Paste here..." {{ fieldsDisabled }}>{{ pasteContent }}</textarea><br>
             <input type="submit" value="Save" {{ fieldsDisabled }}>

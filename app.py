@@ -10,13 +10,13 @@ db = SQLAlchemy(app)
 
 @app.route("/")
 def index():
-    sql = "SELECT id, title FROM pastes ORDER BY modification_date DESC LIMIT 10"
+    sql = "SELECT id, title FROM pastes WHERE publicity='listed' ORDER BY modification_date DESC LIMIT 10"
     pastes = db.session.execute(text(sql)).fetchall()
     return render_template("frontpage.html", pastes=pastes)
 
 @app.route("/paste/<string:id>", methods=["GET"])
 def readPaste(id):
-    sql = "SELECT title, content, owner FROM pastes WHERE id=:id"
+    sql = "SELECT title, content, owner, publicity FROM pastes WHERE id=:id"
     result = db.session.execute(text(sql), { "id": id })
     if result.rowcount != 1:
         return "404 paste not found"
@@ -27,11 +27,12 @@ def readPaste(id):
         header="Read paste",
         existingId=id,
         fieldsDisabled="" if has_edit_permission else "disabled",
+        pastePublicity=paste.publicity,
         pasteTitle=paste.title,
         pasteContent=paste.content,)
 
 @app.route("/paste", methods=["POST"])
-def pastesPost():
+def pastePost():
     # if this is editing, check that user has edit permissions
     if request.form["existingId"] != "":
         if "userid" not in session:
@@ -42,17 +43,34 @@ def pastesPost():
             return "404 invalid paste id"
         if result.fetchone().owner != session["userid"]:
             return "403 you are not the owner"
-
-    sql = "INSERT INTO pastes (title, content, owner) VALUES (:title, :content, :owner) RETURNING id"
-    values = {
-        "title": request.form["title"],
-        "content": request.form["content"],
-        "owner": session["userid"] if "userid" in session else None
-    }
+        
+        sql = """
+            UPDATE pastes SET title=:title, content=:content, publicity=:publicity
+            WHERE id=:pasteid
+            RETURNING id
+        """
+        values = {
+            "title": request.form["title"],
+            "content": request.form["content"],
+            "publicity": request.form["publicity"],
+            "pasteid": request.form["existingId"]
+        }
+    else:
+        sql = """
+            INSERT INTO pastes (title, content, owner, publicity)
+            VALUES (:title, :content, :owner, :publicity)
+            RETURNING id
+        """
+        values = {
+            "title": request.form["title"],
+            "content": request.form["content"],
+            "owner": session["userid"] if "userid" in session else None,
+            "publicity": request.form["publicity"]
+        }
     result = db.session.execute(text(sql), values)
     db.session.commit()
-    new_id = result.fetchone().id
-    return redirect(f"/paste/{new_id}")
+    pasteId = result.fetchone().id
+    return redirect(f"/paste/{pasteId}")
 
 @app.route("/new-paste")
 def newPaste():
