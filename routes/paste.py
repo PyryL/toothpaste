@@ -1,63 +1,44 @@
 from app import app, db
 from flask import render_template, redirect, request, session
 from sqlalchemy import text
+from repositories.pastes import get_paste, update_paste, add_new_paste
 
 @app.route("/paste/<string:id>", methods=["GET"])
 def readPaste(id):
-    sql = "SELECT title, content, owner, publicity FROM pastes WHERE id=:id"
-    result = db.session.execute(text(sql), { "id": id })
-    if result.rowcount != 1:
-        return "404 paste not found"
-    paste = result.fetchone()
-    has_edit_permission = "userid" in session and session["userid"] == paste.owner
+    try:
+        paste = get_paste(id, session["userid"] if "userid" in session else None)
+    except Exception as e:
+        return f"{e.args[0]} {e.args[1]}"
 
     return render_template("paste.html",
         header="Read paste",
         existingId=id,
-        fieldsDisabled="" if has_edit_permission else "disabled",
-        pastePublicity=paste.publicity,
-        pasteTitle=paste.title,
-        pasteContent=paste.content,)
+        fieldsDisabled="" if paste["has_edit_permissions"] else "disabled",
+        pastePublicity=paste["publicity"],
+        pasteTitle=paste["title"],
+        pasteContent=paste["content"])
 
 @app.route("/paste", methods=["POST"])
 def pastePost():
-    # if this is editing, check that user has edit permissions
-    if request.form["existingId"] != "":
-        if "userid" not in session:
-            return "401 not logged in"
-        sql = "SELECT owner FROM pastes WHERE id=:pasteId"
-        result = db.session.execute(text(sql), { "pasteId": request.form["existingId"] })
-        if result.rowcount != 1:
-            return "404 invalid paste id"
-        if result.fetchone().owner != session["userid"]:
-            return "403 you are not the owner"
-        
-        sql = """
-            UPDATE pastes SET title=:title, content=:content, publicity=:publicity
-            WHERE id=:pasteid
-            RETURNING id
-        """
-        values = {
-            "title": request.form["title"],
-            "content": request.form["content"],
-            "publicity": request.form["publicity"],
-            "pasteid": request.form["existingId"]
-        }
-    else:
-        sql = """
-            INSERT INTO pastes (title, content, owner, publicity)
-            VALUES (:title, :content, :owner, :publicity)
-            RETURNING id
-        """
-        values = {
-            "title": request.form["title"],
-            "content": request.form["content"],
-            "owner": session["userid"] if "userid" in session else None,
-            "publicity": request.form["publicity"]
-        }
-    result = db.session.execute(text(sql), values)
-    db.session.commit()
-    pasteId = result.fetchone().id
+    try:
+        if request.form["existingId"] != "":
+            update_paste(
+                request.form["existingId"],
+                request.form["title"],
+                request.form["content"],
+                request.form["publicity"],
+                session["userid"] if "userid" in session else None
+            )
+            pasteId = request.form["existingId"]
+        else:
+            pasteId = add_new_paste(
+                request.form["title"],
+                request.form["content"],
+                request.form["publicity"],
+                session["userid"] if "userid" in session else None
+            )
+    except Exception as e:
+        return f"{e.args[0]} {e.args[1]}"
     return redirect(f"/paste/{pasteId}")
 
 @app.route("/new-paste")
