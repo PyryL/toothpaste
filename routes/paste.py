@@ -1,12 +1,13 @@
 from app import app, db
-from flask import render_template, redirect, request, session
+from flask import render_template, redirect, request
 from sqlalchemy import text
 from repositories.pastes import get_paste, update_paste, add_new_paste
+from utilities.session import get_logged_in_user_id
 
 @app.route("/paste/<string:id>", methods=["GET"])
 def readPaste(id):
     try:
-        paste = get_paste(id, session["userid"] if "userid" in session else None)
+        paste = get_paste(id, get_logged_in_user_id())
     except Exception as e:
         return f"{e.args[0]} {e.args[1]}"
 
@@ -27,7 +28,7 @@ def pastePost():
                 request.form["title"],
                 request.form["content"],
                 request.form["publicity"],
-                session["userid"] if "userid" in session else None
+                get_logged_in_user_id()
             )
             pasteId = request.form["existingId"]
         else:
@@ -35,7 +36,7 @@ def pastePost():
                 request.form["title"],
                 request.form["content"],
                 request.form["publicity"],
-                session["userid"] if "userid" in session else None
+                get_logged_in_user_id()
             )
     except Exception as e:
         return f"{e.args[0]} {e.args[1]}"
