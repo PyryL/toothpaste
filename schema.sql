@@ -21,3 +21,12 @@ CREATE TABLE Pastes (
     owner INTEGER REFERENCES Users,
     publicity Publicity NOT NULL
 );
+
+CREATE TYPE TokenLevel AS ENUM ('view', 'modify');
+
+CREATE TABLE Tokens (
+    id SERIAL PRIMARY KEY,
+    token TEXT UNIQUE NOT NULL,
+    paste INTEGER REFERENCES Pastes NOT NULL,
+    level TokenLevel NOT NULL
+);

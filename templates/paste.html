@@ -8,7 +8,7 @@
     <body>
         <h1>{{ header }}</h1>
         <form method="POST" action="/paste">
-            <input type="hidden" name="existingId" value="{{ existingId }}">
+            <input type="hidden" name="modifyToken" value="{{ modifyToken }}">
             <p>
                 <select name="publicity" {{ fieldsDisabled }}>
                     <option disabled>-- Publicity --</option>
