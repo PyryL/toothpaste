@@ -1,5 +1,6 @@
 from app import db
 from sqlalchemy import text
+from repositories.tokens import get_token_data
 
 # TODO
 from random import choices
@@ -14,14 +15,12 @@ def get_paste(token: str, logged_in_user_id: int) -> dict:
     Raises an exception with data (status_code, description) if unavailable.
     """
 
-    sql = "SELECT paste, level FROM tokens WHERE token=:token"
-    result = db.session.execute(text(sql), { "token": token })
-    if result.rowcount != 1:
+    token_info = get_token_data(token)
+    if token_info is None:
         raise Exception(404, "paste not found")
-    token_info = result.fetchone()
 
     sql = "SELECT title, content, owner, publicity FROM pastes WHERE id=:id"
-    result = db.session.execute(text(sql), { "id": token_info.paste })
+    result = db.session.execute(text(sql), { "id": token_info["pasteId"] })
     if result.rowcount != 1:
         raise Exception(404, "paste not found")
     paste = result.fetchone()
@@ -33,23 +32,21 @@ def get_paste(token: str, logged_in_user_id: int) -> dict:
         "title": paste.title,
         "content": paste.content,
         "publicity": paste.publicity,
-        "has_edit_permissions": token_info.level == "modify"
+        "has_edit_permissions": token_info["level"] == "modify"
     }
 
 def update_paste(token: str, title: str, content: str, publicity: str, logged_in_user_id: int):
     """Updates paste data in database."""
 
-    sql = "SELECT paste, level FROM tokens WHERE token=:token"
-    result = db.session.execute(text(sql), { "token": token })
-    if result.rowcount != 1:
+    token_info = get_token_data(token)
+    if token_info is None:
         raise Exception(404, "paste not found")
-    token_info = result.fetchone()
 
     # check permission
-    if token_info.level != "modify":
+    if token_info["level"] != "modify":
         raise Exception(403, "you are not allowed to modify this paste")
     sql = "SELECT owner, publicity FROM pastes WHERE id=:pasteId"
-    result = db.session.execute(text(sql), { "pasteId": token_info.paste })
+    result = db.session.execute(text(sql), { "pasteId": token_info["pasteId"] })
     if result.rowcount != 1:
         raise Exception(404, "paste not found")
     paste = result.fetchone()
@@ -66,7 +63,7 @@ def update_paste(token: str, title: str, content: str, publicity: str, logged_in
         "title": title,
         "content": content,
         "publicity": publicity,
-        "pasteid": token_info.paste
+        "pasteid": token_info["pasteId"]
     }
     db.session.execute(text(sql), values)
     db.session.commit()
