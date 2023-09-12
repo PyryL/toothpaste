@@ -11,7 +11,7 @@
         <ul>
             {% for paste in pastes %}
             <li>
-                <a href="/paste/{{ paste.id }}">{{ paste.title }}</a>
+                <a href="/paste/{{ paste.token }}">{{ paste.title }}</a>
             </li>
             {% endfor %}
         </ul>
