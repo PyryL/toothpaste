@@ -1,6 +1,6 @@
 from app import db
 from sqlalchemy import text
-from repositories.tokens import get_token_data
+from repositories.tokens import get_token_data, get_tokens_of_paste
 
 # TODO
 from random import choices
@@ -28,11 +28,15 @@ def get_paste(token: str, logged_in_user_id: int) -> dict:
     if paste.publicity == "private" and logged_in_user_id != paste.owner:
         raise Exception(403, "not allowed to view this paste")
 
+    all_tokens = get_tokens_of_paste(token_info["pasteId"])
+
     return {
         "title": paste.title,
         "content": paste.content,
         "publicity": paste.publicity,
-        "has_edit_permissions": token_info["level"] == "modify"
+        "has_edit_permissions": token_info["level"] == "modify",
+        "view_token": next((t["token"] for t in all_tokens if t["level"] == "view"), None),
+        "modify_token": next((t["token"] for t in all_tokens if t["level"] == "modify"), None)
     }
 
 def update_paste(token: str, title: str, content: str, publicity: str, logged_in_user_id: int):

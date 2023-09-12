@@ -13,3 +13,10 @@ def get_token_data(token: str) -> dict:
         "pasteId": token_info.paste,
         "level": token_info.level
     }
+
+def get_tokens_of_paste(pasteId: int) -> list[dict]:
+    """Returns a list of all tokens related to the given paste."""
+
+    sql = "SELECT token, level FROM tokens WHERE paste=:pasteId"
+    result = db.session.execute(text(sql), { "pasteId": pasteId })
+    return [{ "token": row.token, "level": row.level } for row in result.fetchall()]

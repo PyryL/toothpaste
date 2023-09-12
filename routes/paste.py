@@ -13,6 +13,8 @@ def readPaste(token):
 
     return render_template("paste.html",
         header="Read paste",
+        share_view_token=paste["view_token"] if paste["has_edit_permissions"] else "",
+        share_modify_token=paste["modify_token"] if paste["has_edit_permissions"] else "",
         modifyToken=token if paste["has_edit_permissions"] else "",
         fieldsDisabled="" if paste["has_edit_permissions"] else "disabled",
         pastePublicity=paste["publicity"],
