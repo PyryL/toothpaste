@@ -7,7 +7,7 @@
     </head>
     <body>
         <h1>{{ header }}</h1>
-        {% if share_view_token != '' and share_modify_token != '' %}
+        {% if share_view_token and share_modify_token %}
         <p>
             <label for="share-view">View:</label>
             <input id="share-view" value="{{ share_view_token }}" disabled><br>
