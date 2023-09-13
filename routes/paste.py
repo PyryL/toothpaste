@@ -3,6 +3,7 @@ from flask import render_template, redirect, request
 from sqlalchemy import text
 from repositories.pastes import get_paste, update_paste, add_new_paste
 from repositories.chat import get_messages_of_paste
+from repositories.votes import get_votes_of_paste
 from utilities.session import get_logged_in_user_id
 
 @app.route("/paste/<string:token>", methods=["GET"])
@@ -12,6 +13,7 @@ def readPaste(token):
     except Exception as e:
         return f"{e.args[0]} {e.args[1]}"
 
+    votes = get_votes_of_paste(token)
     return render_template("paste.html",
         header="Read paste",
         share_view_token=paste["view_token"] if paste["has_edit_permissions"] else "",
@@ -21,6 +23,9 @@ def readPaste(token):
         pastePublicity=paste["publicity"],
         pasteTitle=paste["title"],
         pasteContent=paste["content"],
+        votingAvailable=True,
+        upVotes=votes["upvotes"],
+        downVotes=votes["downvotes"],
         chatToken=token,
         chatMessages=get_messages_of_paste(token),
         chatRemoveAvailable=paste["is_owner"])

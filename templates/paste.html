@@ -33,6 +33,10 @@
             <textarea name="content" rows="8" cols="30" placeholder="Paste here..." {{ fieldsDisabled }}>{{ pasteContent }}</textarea><br>
             <input type="submit" value="Save" {{ fieldsDisabled }}>
         </form>
+        {% if votingAvailable %}
+        <h2>Vote</h2>
+        <p>{{ upVotes }} &#9650; / {{ downVotes }} &#9660;</p>
+        {% endif %}
         {% if chatToken %}
         <h2>Chat</h2>
         {% for message in chatMessages %}
