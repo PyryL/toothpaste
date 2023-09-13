@@ -1,5 +1,16 @@
 from app import db
 from sqlalchemy import text
+from random import choices
+from string import ascii_letters, digits
+
+def generate_token() -> str:
+    chars = ascii_letters + digits
+    sql = "SELECT COUNT(*) AS count FROM tokens WHERE token=:token"
+    while True:
+        token = "".join(choices(chars, k=12))
+        existing_count = int(db.session.execute(text(sql), { "token": token }).fetchone().count)
+        if existing_count == 0:
+            return token
 
 def get_token_data(token: str) -> dict:
     """Returns token information dictionary, or None if not found."""

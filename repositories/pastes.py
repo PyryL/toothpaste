@@ -1,13 +1,6 @@
 from app import db
 from sqlalchemy import text
-from repositories.tokens import get_token_data, get_tokens_of_paste
-
-# TODO
-from random import choices
-from string import ascii_letters, digits
-def generate_token() -> str:
-    chars = ascii_letters + digits
-    return "".join(choices(chars, k=12))
+from repositories.tokens import get_token_data, get_tokens_of_paste, generate_token
 
 def get_paste(token: str, logged_in_user_id: int) -> dict:
     """Load paste with given token from the database.
