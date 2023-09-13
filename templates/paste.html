@@ -4,6 +4,11 @@
         <title>{{ header }} &ndash; ToothPaste</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta charset="utf-8">
+        <style>
+            .chat-message {
+                border: 1px solid black;
+            }
+        </style>
     </head>
     <body>
         <h1>{{ header }}</h1>
@@ -30,6 +35,13 @@
         </form>
         {% if chatToken %}
         <h2>Chat</h2>
+        {% for message in chatMessages %}
+        <div class="chat-message">
+            <p>{{ message.content }}</p>
+            <span>{{ message.creator if message.creator else '<i>Anonymous</i>' | safe }}</span>
+            <span>{{ message.creation_date }}</span>
+        </div>
+        {% endfor %}
         <form method="POST" action="/chat">
             <input type="hidden" name="token" value="{{ chatToken }}">
             <textarea name="content" rows="3" cols="30" placeholder="Message here..." minlength="1"></textarea><br>

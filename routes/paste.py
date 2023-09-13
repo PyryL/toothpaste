@@ -2,6 +2,7 @@ from app import app, db
 from flask import render_template, redirect, request
 from sqlalchemy import text
 from repositories.pastes import get_paste, update_paste, add_new_paste
+from repositories.chat import get_messages_of_paste
 from utilities.session import get_logged_in_user_id
 
 @app.route("/paste/<string:token>", methods=["GET"])
@@ -20,7 +21,8 @@ def readPaste(token):
         pastePublicity=paste["publicity"],
         pasteTitle=paste["title"],
         pasteContent=paste["content"],
-        chatToken=token)
+        chatToken=token,
+        chatMessages=get_messages_of_paste(token))
 
 @app.route("/paste", methods=["POST"])
 def pastePost():
