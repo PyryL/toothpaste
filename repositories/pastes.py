@@ -75,6 +75,7 @@ def update_paste(token: str, title: str, content: str, publicity: str, logged_in
 def add_new_paste(title: str, content: str, publicity: str, logged_in_user_id: int) -> int:
     """Add new paste into database and return its modify-level token."""
 
+    # save the paste
     sql = """
         INSERT INTO pastes (title, content, owner, publicity)
         VALUES (:title, :content, :owner, :publicity)
@@ -89,15 +90,23 @@ def add_new_paste(title: str, content: str, publicity: str, logged_in_user_id: i
     result = db.session.execute(text(sql), values)
     pasteId = result.fetchone().id
 
+    # create view and modify-level tokens
     sql = """
         INSERT INTO tokens (token, paste, level)
-        VALUES (:token, :paste, 'modify')
+        VALUES (:token, :paste, :level)
     """
     modifyLevelToken = generate_token()
-    values = {
+    modifyValues = {
         "token": modifyLevelToken,
-        "paste": pasteId
+        "paste": pasteId,
+        "level": "modify"
     }
-    db.session.execute(text(sql), values)
+    viewValues = {
+        "token": generate_token(),
+        "paste": pasteId,
+        "level": "view"
+    }
+    db.session.execute(text(sql), modifyValues)
+    db.session.execute(text(sql), viewValues)
     db.session.commit()
     return modifyLevelToken
