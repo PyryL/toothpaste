@@ -28,5 +28,13 @@
             <textarea name="content" rows="8" cols="30" placeholder="Paste here..." {{ fieldsDisabled }}>{{ pasteContent }}</textarea><br>
             <input type="submit" value="Save" {{ fieldsDisabled }}>
         </form>
+        {% if chatToken %}
+        <h2>Chat</h2>
+        <form method="POST" action="/chat">
+            <input type="hidden" name="token" value="{{ chatToken }}">
+            <textarea name="content" rows="3" cols="30" placeholder="Message here..." minlength="1"></textarea><br>
+            <input type="submit" value="Send">
+        </form>
+        {% endif %}
     </body>
 </html>

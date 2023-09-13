@@ -10,3 +10,4 @@ db = SQLAlchemy(app)
 from routes import index
 from routes import paste
 from routes import user
+from routes import chat

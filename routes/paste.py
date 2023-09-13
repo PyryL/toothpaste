@@ -19,7 +19,8 @@ def readPaste(token):
         fieldsDisabled="" if paste["has_edit_permissions"] else "disabled",
         pastePublicity=paste["publicity"],
         pasteTitle=paste["title"],
-        pasteContent=paste["content"])
+        pasteContent=paste["content"],
+        chatToken=token)
 
 @app.route("/paste", methods=["POST"])
 def pastePost():
