@@ -22,7 +22,8 @@ def readPaste(token):
         pasteTitle=paste["title"],
         pasteContent=paste["content"],
         chatToken=token,
-        chatMessages=get_messages_of_paste(token))
+        chatMessages=get_messages_of_paste(token),
+        chatRemoveAvailable=paste["is_owner"])
 
 @app.route("/paste", methods=["POST"])
 def pastePost():

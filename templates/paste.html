@@ -40,6 +40,13 @@
             <p>{{ message.content }}</p>
             <span>{{ message.creator if message.creator else '<i>Anonymous</i>' | safe }}</span>
             <span>{{ message.creation_date }}</span>
+            {% if chatRemoveAvailable %}
+            <br>
+            <form method="POST" action="/chat/delete/{{ message.id }}">
+                <input type="hidden" name="token" value="{{ chatToken }}">
+                <input type="submit" value="Remove">
+            </form>
+            {% endif %}
         </div>
         {% endfor %}
         <form method="POST" action="/chat">

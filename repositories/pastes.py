@@ -28,6 +28,7 @@ def get_paste(token: str, logged_in_user_id: int) -> dict:
         "content": paste.content,
         "publicity": paste.publicity,
         "has_edit_permissions": token_info["level"] == "modify",
+        "is_owner": logged_in_user_id == paste.owner and logged_in_user_id is not None,
         "view_token": next((t["token"] for t in all_tokens if t["level"] == "view"), None),
         "modify_token": next((t["token"] for t in all_tokens if t["level"] == "modify"), None)
     }
