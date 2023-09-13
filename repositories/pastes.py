@@ -1,6 +1,6 @@
 from app import db
 from sqlalchemy import text
-from repositories.tokens import get_token_data, get_tokens_of_paste, generate_token
+from repositories.tokens import get_token_data, get_tokens_of_paste, generate_token, add_new_token
 
 def get_paste(token: str, logged_in_user_id: int) -> dict:
     """Load paste with given token from the database.
@@ -65,7 +65,7 @@ def update_paste(token: str, title: str, content: str, publicity: str, logged_in
     db.session.execute(text(sql), values)
     db.session.commit()
 
-def add_new_paste(title: str, content: str, publicity: str, logged_in_user_id: int) -> int:
+def add_new_paste(title: str, content: str, publicity: str, logged_in_user_id: int) -> str:
     """Add new paste into database and return its modify-level token."""
 
     # save the paste
@@ -84,22 +84,6 @@ def add_new_paste(title: str, content: str, publicity: str, logged_in_user_id: i
     pasteId = result.fetchone().id
 
     # create view and modify-level tokens
-    sql = """
-        INSERT INTO tokens (token, paste, level)
-        VALUES (:token, :paste, :level)
-    """
-    modifyLevelToken = generate_token()
-    modifyValues = {
-        "token": modifyLevelToken,
-        "paste": pasteId,
-        "level": "modify"
-    }
-    viewValues = {
-        "token": generate_token(),
-        "paste": pasteId,
-        "level": "view"
-    }
-    db.session.execute(text(sql), modifyValues)
-    db.session.execute(text(sql), viewValues)
-    db.session.commit()
+    modifyLevelToken = add_new_token(pasteId, "modify")
+    add_new_token(pasteId, "view")
     return modifyLevelToken

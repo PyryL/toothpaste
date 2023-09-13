@@ -12,6 +12,23 @@ def generate_token() -> str:
         if existing_count == 0:
             return token
 
+def add_new_token(pasteId: int, level: str) -> str:
+    """Generates a new token and adds it to database. Returns the token."""
+
+    sql = """
+        INSERT INTO tokens (token, paste, level)
+        VALUES (:token, :paste, :level)
+    """
+    token = generate_token()
+    values = {
+        "token": token,
+        "paste": pasteId,
+        "level": level
+    }
+    db.session.execute(text(sql), values)
+    db.session.commit()
+    return token
+
 def get_token_data(token: str) -> dict:
     """Returns token information dictionary, or None if not found."""
 
