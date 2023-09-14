@@ -26,6 +26,7 @@
                 <select name="publicity" {{ fieldsDisabled }}>
                     <option disabled>-- Publicity --</option>
                     <option value="listed" {{ 'selected' if pastePublicity == 'listed' else '' }}>Listed on the front page</option>
+                    <option value="unlisted" {{ 'selected' if pastePublicity == 'unlisted' else '' }}>Anyone with link</option>
                     <option value="private" {{ 'selected' if pastePublicity == 'private' else '' }}>Only for you</option>
                 </select>
             </p>

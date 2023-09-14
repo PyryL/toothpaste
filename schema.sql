@@ -11,7 +11,7 @@ CREATE TABLE Users (
     password_hash TEXT NOT NULL
 );
 
-CREATE TYPE Publicity AS ENUM ('listed', 'private');
+CREATE TYPE Publicity AS ENUM ('listed', 'unlisted', 'private');
 
 CREATE TABLE Pastes (
     id SERIAL PRIMARY KEY,
