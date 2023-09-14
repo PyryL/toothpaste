@@ -2,6 +2,14 @@ from app import db
 from sqlalchemy import text
 from repositories.tokens import get_token_data, get_tokens_of_paste, generate_token, add_new_token
 
+def has_user_view_permission(token: str, logged_in_user_id: int) -> bool:
+    sql = "SELECT owner, publicity FROM pastes WHERE id=(SELECT paste FROM tokens WHERE token=:token)"
+    result = db.session.execute(text(sql), { "token": token })
+    if result.rowcount != 1:
+        return False
+    paste = result.fetchone()
+    return paste.publicity != "private" or logged_in_user_id == paste.owner
+
 def get_paste(token: str, logged_in_user_id: int) -> dict:
     """Load paste with given token from the database.
     Returns dictionary containing paste data if available.

@@ -29,7 +29,7 @@ def readPaste(token):
         chatToken=token,
         chatMessages=get_messages_of_paste(token),
         chatRemoveAvailable=paste["is_owner"])
-
+    
 @app.route("/paste", methods=["POST"])
 def pastePost():
     try:
