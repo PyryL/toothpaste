@@ -30,3 +30,18 @@ CREATE TABLE Tokens (
     paste INTEGER REFERENCES Pastes NOT NULL,
     level TokenLevel NOT NULL
 );
+
+CREATE TABLE ChatMessages (
+    id SERIAL PRIMARY KEY,
+    paste INTEGER REFERENCES Pastes NOT NULL,
+    creator INTEGER REFERENCES Users,
+    content TEXT NOT NULL,
+    creation_date TIMESTAMP NOT NULL DEFAULT current_timestamp
+);
+
+CREATE TABLE Votes (
+    id SERIAL PRIMARY KEY,
+    paste INTEGER REFERENCES Pastes NOT NULL,
+    voter INTEGER REFERENCES Users NOT NULL,
+    is_upvote BOOLEAN NOT NULL
+);
