@@ -20,7 +20,7 @@ def get_paste(token: str, logged_in_user_id: int) -> dict:
     if token_info is None:
         raise Exception(404, "paste not found")
 
-    sql = "SELECT title, content, owner, publicity FROM pastes WHERE id=:id"
+    sql = "SELECT title, content, owner, publicity, is_encrypted FROM pastes WHERE id=:id"
     result = db.session.execute(text(sql), { "id": token_info["pasteId"] })
     if result.rowcount != 1:
         raise Exception(404, "paste not found")
@@ -35,6 +35,7 @@ def get_paste(token: str, logged_in_user_id: int) -> dict:
         "title": paste.title,
         "content": paste.content,
         "publicity": paste.publicity,
+        "is_encrypted": paste.is_encrypted,
         "has_edit_permissions": token_info["level"] == "modify",
         "is_owner": logged_in_user_id == paste.owner and logged_in_user_id is not None,
         "view_token": next((t["token"] for t in all_tokens if t["level"] == "view"), None),

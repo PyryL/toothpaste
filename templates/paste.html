@@ -31,7 +31,7 @@
                 </select>
             </p>
             <p>
-                <input type="text" id="encryption-key" name="encryption-key" placeholder="Encryption key (optional)" {{ fieldsDisabled }}>
+                <input type="text" id="encryption-key" name="encryption-key" placeholder="Encryption key (optional)" value="{{ encryption_key }}" {{ fieldsDisabled }}>
             </p>
             <input type="text" name="title" placeholder="Paste title" minlength="1" {{ fieldsDisabled }} value="{{ pasteTitle }}"><br>
             <textarea name="content" rows="8" cols="30" placeholder="Paste here..." {{ fieldsDisabled }}>{{ pasteContent }}</textarea><br>
