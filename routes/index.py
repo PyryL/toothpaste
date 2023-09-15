@@ -7,7 +7,7 @@ def index():
     sql = """
         SELECT p.title AS title, t.token AS token
         FROM pastes AS p, tokens AS t
-        WHERE t.paste=p.id AND t.level='view' AND p.publicity='listed'
+        WHERE t.paste=p.id AND t.level='view' AND p.publicity='listed' AND p.is_encrypted=FALSE
         ORDER BY modification_date DESC
         LIMIT 10
     """
