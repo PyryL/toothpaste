@@ -5,6 +5,7 @@ from repositories.pastes import get_paste, update_paste, add_new_paste
 from repositories.chat import get_messages_of_paste
 from repositories.votes import get_votes_of_paste
 from utilities.session import get_logged_in_user_id
+from utilities.encryption import encrypt, decrypt
 
 @app.route("/paste/<string:token>", methods=["GET"])
 def readPaste(token):
@@ -32,21 +33,27 @@ def readPaste(token):
     
 @app.route("/paste", methods=["POST"])
 def pastePost():
+    if request.form["encryption-key"] == "":
+        content = request.form["content"]
+    else:
+        content = encrypt(request.form["content"].encode("utf-8"), request.form["encryption-key"])
     try:
         if request.form["modifyToken"] != "":
             update_paste(
                 request.form["modifyToken"],
                 request.form["title"],
-                request.form["content"],
+                content,
                 request.form["publicity"],
+                request.form["encryption-key"] != "",
                 get_logged_in_user_id()
             )
             pasteToken = request.form["modifyToken"]
         else:
             pasteToken = add_new_paste(
                 request.form["title"],
-                request.form["content"],
+                content,
                 request.form["publicity"],
+                request.form["encryption-key"] != "",
                 get_logged_in_user_id()
             )
     except Exception as e:

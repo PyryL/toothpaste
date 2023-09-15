@@ -30,6 +30,9 @@
                     <option value="private" {{ 'selected' if pastePublicity == 'private' else '' }}>Only for you</option>
                 </select>
             </p>
+            <p>
+                <input type="text" id="encryption-key" name="encryption-key" placeholder="Encryption key (optional)" {{ fieldsDisabled }}>
+            </p>
             <input type="text" name="title" placeholder="Paste title" minlength="1" {{ fieldsDisabled }} value="{{ pasteTitle }}"><br>
             <textarea name="content" rows="8" cols="30" placeholder="Paste here..." {{ fieldsDisabled }}>{{ pasteContent }}</textarea><br>
             <input type="submit" value="Save" {{ fieldsDisabled }}>

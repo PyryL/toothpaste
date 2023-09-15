@@ -19,7 +19,8 @@ CREATE TABLE Pastes (
     content TEXT NOT NULL,
     modification_date TIMESTAMP NOT NULL DEFAULT current_timestamp,
     owner INTEGER REFERENCES Users,
-    publicity Publicity NOT NULL
+    publicity Publicity NOT NULL,
+    is_encrypted BOOLEAN NOT NULL
 );
 
 CREATE TYPE TokenLevel AS ENUM ('view', 'modify');
