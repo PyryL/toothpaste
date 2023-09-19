@@ -1,7 +1,7 @@
 from app import app, db
 from flask import render_template, redirect, request
 from sqlalchemy import text
-from repositories.pastes import get_paste, update_paste, add_new_paste
+from repositories.pastes import get_paste, update_paste, add_new_paste, delete_paste
 from repositories.chat import get_messages_of_paste
 from repositories.votes import get_votes_of_paste
 from utilities.session import get_logged_in_user_id
@@ -36,6 +36,7 @@ def readPaste(token):
         encryption_key=request.form["decryption-key"] if paste["is_encrypted"] else "",
         pasteTitle=paste["title"],
         pasteContent=content,
+        pasteDeleteAvailable=(paste["is_owner"] or not paste["has_owner"]) and paste["has_edit_permissions"],
         votingAvailable=True,
         upVotes=votes["upvotes"],
         downVotes=votes["downvotes"],
@@ -86,3 +87,12 @@ def askKey(token: str):
     return render_template("ask-key.html",
         token=token,
         is_incorrect=is_incorrect)
+
+@app.route("/paste/delete/<string:token>", methods=["POST"])
+def deletePaste(token: str):
+    try:
+        delete_paste(token, get_logged_in_user_id())
+    except Exception as e:
+        return f"{e.args[0]} {e.args[1]}"
+    
+    return redirect("/")

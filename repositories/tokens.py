@@ -48,3 +48,8 @@ def get_tokens_of_paste(pasteId: int) -> list[dict]:
     sql = "SELECT token, level FROM tokens WHERE paste=:pasteId"
     result = db.session.execute(text(sql), { "pasteId": pasteId })
     return [{ "token": row.token, "level": row.level } for row in result.fetchall()]
+
+def delete_tokens_of_paste(pasteId: int):
+    sql = "DELETE FROM tokens WHERE paste=:pasteId"
+    db.session.execute(text(sql), { "pasteId": pasteId })
+    db.session.commit()

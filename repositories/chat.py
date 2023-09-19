@@ -37,3 +37,8 @@ def delete_message(id: int):
     sql = "DELETE FROM chatmessages WHERE id=:id"
     db.session.execute(text(sql), { "id": id })
     db.session.commit()
+
+def delete_messages_of_paste(pasteId: int):
+    sql = "DELETE FROM chatmessages WHERE paste=:pasteId"
+    db.session.execute(text(sql), { "pasteId": pasteId })
+    db.session.commit()
