@@ -46,3 +46,8 @@ def register_vote(token: str, logged_in_user_id: int, is_upvote: bool):
         values = { "isUpvote": is_upvote, "token": token, "userid": logged_in_user_id }
         db.session.execute(text(sql), values)
         db.session.commit()
+
+def delete_votes_of_paste(pasteId: int):
+    sql = "DELETE FROM votes WHERE paste=:pasteId"
+    db.session.execute(text(sql), { "pasteId": pasteId })
+    db.session.commit()
