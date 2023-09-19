@@ -34,5 +34,7 @@ def postSignUp():
     
     # add user to database
     userid = UserRepository.add_new_user(request.form["username"], request.form["password1"])
+    if userid is None:
+        return redirect("/sign-up?status=username-exists")
     set_logged_in_user_id(userid)
     return redirect("/")
