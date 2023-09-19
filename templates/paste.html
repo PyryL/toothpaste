@@ -37,6 +37,13 @@
             <textarea name="content" rows="8" cols="30" placeholder="Paste here..." {{ fieldsDisabled }}>{{ pasteContent }}</textarea><br>
             <input type="submit" value="Save" {{ fieldsDisabled }}>
         </form>
+        {% if pasteDeleteAvailable %}
+        <p>
+            <form method="POST" action="/paste/delete/{{ modifyToken }}">
+                <input type="submit" value="Delete paste" style="color: red">
+            </form>
+        </p>
+        {% endif %}
         {% if votingAvailable %}
         <h2>Vote</h2>
         <p>{{ upVotes }} &#9650; / {{ downVotes }} &#9660;</p>
