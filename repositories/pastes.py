@@ -32,42 +32,41 @@ def get_paste(pasteId: int) -> dict:
     #     "owner": paste.owner
     # }
 
-def update_paste(token: str, title: str, content: str, publicity: str, is_encrypted: bool, logged_in_user_id: int):
+def update_paste(pasteId: int, title: str, content: str, publicity: str, is_encrypted: bool, logged_in_user_id: int):
     """Updates paste data in database."""
 
-    token_info = get_token_data(token)
-    if token_info is None:
-        raise Exception(404, "paste not found")
+    # token_info = get_token_data(token)
+    # if token_info is None:
+    #     raise Exception(404, "paste not found")
 
     # check permission
-    if token_info["level"] != "modify":
-        raise Exception(403, "you are not allowed to modify this paste")
-    sql = "SELECT owner, publicity FROM pastes WHERE id=:pasteId"
-    result = db.session.execute(text(sql), { "pasteId": token_info["pasteId"] })
-    if result.rowcount != 1:
-        raise Exception(404, "paste not found")
-    paste = result.fetchone()
-    if paste.publicity == "private" and paste.owner != logged_in_user_id:
-        raise Exception(403, "you are not the owner")
+    # if token_info["level"] != "modify":
+    #     raise Exception(403, "you are not allowed to modify this paste")
+    # sql = "SELECT owner, publicity FROM pastes WHERE id=:pasteId"
+    # result = db.session.execute(text(sql), { "pasteId": token_info["pasteId"] })
+    # if result.rowcount != 1:
+    #     raise Exception(404, "paste not found")
+    # paste = result.fetchone()
+    # if paste.publicity == "private" and paste.owner != logged_in_user_id:
+    #     raise Exception(403, "you are not the owner")
 
     sql = """
         UPDATE pastes
         SET title=:title, content=:content, publicity=:publicity, is_encrypted=:is_encrypted
         WHERE id=:pasteid
-        RETURNING id
     """
     values = {
         "title": title,
         "content": content,
         "publicity": publicity,
         "is_encrypted": is_encrypted,
-        "pasteid": token_info["pasteId"]
+        "pasteid": pasteId
     }
     db.session.execute(text(sql), values)
     db.session.commit()
 
 def add_new_paste(title: str, content: str, publicity: str, is_encrypted: bool, logged_in_user_id: int) -> str:
-    """Add new paste into database and return its modify-level token."""
+    """Add new paste into database and return its id."""
 
     # save the paste
     sql = """
@@ -83,12 +82,7 @@ def add_new_paste(title: str, content: str, publicity: str, is_encrypted: bool, 
         "is_encrypted": is_encrypted
     }
     result = db.session.execute(text(sql), values)
-    pasteId = result.fetchone().id
-
-    # create view and modify-level tokens
-    modifyLevelToken = add_new_token(pasteId, "modify")
-    add_new_token(pasteId, "view")
-    return modifyLevelToken
+    return result.fetchone().id
 
 def delete_paste(pasteId: int):
     sql = "DELETE FROM pastes WHERE id=:pasteId"

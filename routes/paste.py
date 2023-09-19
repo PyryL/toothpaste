@@ -61,32 +61,49 @@ def readPaste(token):
 
 @app.route("/paste", methods=["POST"])
 def pastePost():
-    if request.form["encryption-key"] == "":
-        content = request.form["content"]
-    else:
+    # in case of modify, check that user has permission to modify
+    is_modify = request.form["modifyToken"] != ""
+    logged_in_user_id = get_logged_in_user_id()
+    if is_modify:
+        token_info = get_token_data(request.form["modifyToken"])
+        if token_info is None:
+            return "404 paste not found"
+        paste = get_paste(token_info["pasteId"])
+        if paste is None:
+            return "404 paste not found"
+        if not Permissions.can_modify_paste(token_info["level"], paste.publicity, paste.owner, logged_in_user_id):
+            return "403 forbidden"
+
+    # encrypt paste content if encryption key is provided
+    is_encrypted = request.form["encryption-key"] != ""
+    if is_encrypted:
         content = encrypt(request.form["content"].encode("utf-8"), request.form["encryption-key"]).hex()
-    try:
-        if request.form["modifyToken"] != "":
-            update_paste(
-                request.form["modifyToken"],
-                request.form["title"],
-                content,
-                request.form["publicity"],
-                request.form["encryption-key"] != "",
-                get_logged_in_user_id()
-            )
-            pasteToken = request.form["modifyToken"]
-        else:
-            pasteToken = add_new_paste(
-                request.form["title"],
-                content,
-                request.form["publicity"],
-                request.form["encryption-key"] != "",
-                get_logged_in_user_id()
-            )
-    except Exception as e:
-        return f"{e.args[0]} {e.args[1]}"
-    return redirect(f"/paste/{pasteToken}")
+    else:
+        content = request.form["content"]
+
+    # insert or update database
+    if is_modify:
+        update_paste(
+            token_info["pasteId"],
+            request.form["title"],
+            content,
+            request.form["publicity"],
+            is_encrypted,
+            logged_in_user_id
+        )
+        token = request.form["modifyToken"]
+    else:
+        pasteId = add_new_paste(
+            request.form["title"],
+            content,
+            request.form["publicity"],
+            is_encrypted,
+            logged_in_user_id
+        )
+        token = add_new_token(pasteId, "modify")
+        add_new_token(pasteId, "view")
+
+    return redirect(f"/paste/{token}")
 
 @app.route("/new-paste")
 def newPaste():
