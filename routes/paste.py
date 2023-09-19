@@ -36,7 +36,7 @@ def readPaste(token):
         encryption_key=request.form["decryption-key"] if paste["is_encrypted"] else "",
         pasteTitle=paste["title"],
         pasteContent=content,
-        pasteDeleteAvailable=paste["is_owner"] and paste["has_edit_permissions"],
+        pasteDeleteAvailable=(paste["is_owner"] or not paste["has_owner"]) and paste["has_edit_permissions"],
         votingAvailable=True,
         upVotes=votes["upvotes"],
         downVotes=votes["downvotes"],
