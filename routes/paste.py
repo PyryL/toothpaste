@@ -114,11 +114,18 @@ def deletePaste(token: str):
 
 @app.route("/paste/regenerate-tokens/<string:token>", methods=["POST"])
 def regenerateTokens(token: str):
+    logged_in_user_id = get_logged_in_user_id()
     token_info = get_token_data(token)
+    try:
+        paste = get_paste(token, logged_in_user_id)
+    except Exception as e:
+        return "failed"
+
     if token_info is None:
         return "404 paste not found"
-    if token_info["level"] != "modify":
-        return "403 you are not a modifier"
+
+    if not Permissions.can_regenerate_tokens(token_info["level"], paste["owner"], logged_in_user_id):
+        return "403 forbidden"
 
     # delete existing and generate new
     delete_tokens_of_paste(token_info["pasteId"])
