@@ -44,5 +44,6 @@ CREATE TABLE Votes (
     id SERIAL PRIMARY KEY,
     paste INTEGER REFERENCES Pastes NOT NULL,
     voter INTEGER REFERENCES Users NOT NULL,
-    is_upvote BOOLEAN NOT NULL
+    is_upvote BOOLEAN NOT NULL,
+    UNIQUE (paste, voter)
 );
