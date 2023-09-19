@@ -4,6 +4,7 @@ from sqlalchemy import text
 from repositories.pastes import get_paste, update_paste, add_new_paste, delete_paste
 from repositories.chat import get_messages_of_paste
 from repositories.votes import get_votes_of_paste
+from repositories.tokens import add_new_token, delete_tokens_of_paste, get_token_data
 from utilities.session import get_logged_in_user_id
 from utilities.encryption import encrypt, decrypt
 
@@ -96,3 +97,18 @@ def deletePaste(token: str):
         return f"{e.args[0]} {e.args[1]}"
     
     return redirect("/")
+
+@app.route("/paste/regenerate-tokens/<string:token>", methods=["POST"])
+def regenerateTokens(token: str):
+    token_info = get_token_data(token)
+    if token_info is None:
+        return "404 paste not found"
+    if token_info["level"] != "modify":
+        return "403 you are not a modifier"
+
+    # delete existing and generate new
+    delete_tokens_of_paste(token_info["pasteId"])
+    modifyLevelToken = add_new_token(token_info["pasteId"], "modify")
+    add_new_token(token_info["pasteId"], "view")
+
+    return redirect(f"/paste/{modifyLevelToken}")
