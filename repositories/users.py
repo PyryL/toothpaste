@@ -26,10 +26,15 @@ class UserRepository:
     def add_new_user(cls, username: str, password: str) -> int:
         """Add a new user to the database.
         Does not check given credentials for any requirements.
-        Returns the user ID of the created account.
+        Returns the user ID of the created account, or None is username already exists.
         """
 
-        # TODO: check that user with given username does not already exist
+        # check for duplicate username
+        sql = "SELECT COUNT(username) AS count FROM users WHERE username=:username"
+        result = db.session.execute(text(sql), { "username": username })
+        if int(result.fetchone().count) != 0:
+            return None
+
         sql = """
             INSERT INTO users (username, password_hash)
             VALUES (:username, crypt(:password, gen_salt('bf')))
