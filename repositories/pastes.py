@@ -42,7 +42,9 @@ def get_paste(token: str, logged_in_user_id: int) -> dict:
         "is_owner": logged_in_user_id == paste.owner and logged_in_user_id is not None,
         "has_owner": paste.owner is not None,
         "view_token": next((t["token"] for t in all_tokens if t["level"] == "view"), None),
-        "modify_token": next((t["token"] for t in all_tokens if t["level"] == "modify"), None)
+        "modify_token": next((t["token"] for t in all_tokens if t["level"] == "modify"), None),
+
+        "owner": paste.owner
     }
 
 def update_paste(token: str, title: str, content: str, publicity: str, is_encrypted: bool, logged_in_user_id: int):
@@ -103,26 +105,22 @@ def add_new_paste(title: str, content: str, publicity: str, is_encrypted: bool, 
     add_new_token(pasteId, "view")
     return modifyLevelToken
 
-def delete_paste(token: str, logged_in_user_id: int):
-    token_info = get_token_data(token)
-    if token_info is None:
-        raise Exception(404, "paste not found")
+def delete_paste(pasteId: int):
+    # token_info = get_token_data(token)
+    # if token_info is None:
+    #     raise Exception(404, "paste not found")
 
-    # check permission
-    if token_info["level"] != "modify":
-        raise Exception(403, "you are not allowed to delete this paste")
-    sql = "SELECT owner FROM pastes WHERE id=:pasteId"
-    result = db.session.execute(text(sql), { "pasteId": token_info["pasteId"] })
-    if result.rowcount != 1:
-        raise Exception(404, "paste not found")
-    paste = result.fetchone()
-    if paste.owner != logged_in_user_id:
-        raise Exception(403, "you are not the owner")
-
-    delete_tokens_of_paste(token_info["pasteId"])
-    delete_votes_of_paste(token_info["pasteId"])
-    delete_messages_of_paste(token_info["pasteId"])
+    # # check permission
+    # if token_info["level"] != "modify":
+    #     raise Exception(403, "you are not allowed to delete this paste")
+    # sql = "SELECT owner FROM pastes WHERE id=:pasteId"
+    # result = db.session.execute(text(sql), { "pasteId": token_info["pasteId"] })
+    # if result.rowcount != 1:
+    #     raise Exception(404, "paste not found")
+    # paste = result.fetchone()
+    # if paste.owner != logged_in_user_id:
+    #     raise Exception(403, "you are not the owner")
 
     sql = "DELETE FROM pastes WHERE id=:pasteId"
-    db.session.execute(text(sql), { "pasteId": token_info["pasteId"] })
+    db.session.execute(text(sql), { "pasteId": pasteId })
     db.session.commit()

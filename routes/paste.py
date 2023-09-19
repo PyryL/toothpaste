@@ -2,11 +2,12 @@ from app import app, db
 from flask import render_template, redirect, request
 from sqlalchemy import text
 from repositories.pastes import get_paste, update_paste, add_new_paste, delete_paste
-from repositories.chat import get_messages_of_paste
-from repositories.votes import get_votes_of_paste
+from repositories.chat import get_messages_of_paste, delete_messages_of_paste
+from repositories.votes import get_votes_of_paste, delete_votes_of_paste
 from repositories.tokens import add_new_token, delete_tokens_of_paste, get_token_data
 from utilities.session import get_logged_in_user_id
 from utilities.encryption import encrypt, decrypt
+from utilities.permissions import Permissions
 
 @app.route("/paste/<string:token>", methods=["GET", "POST"])
 def readPaste(token):
@@ -91,10 +92,23 @@ def askKey(token: str):
 
 @app.route("/paste/delete/<string:token>", methods=["POST"])
 def deletePaste(token: str):
+    logged_in_user_id = get_logged_in_user_id()
+    token_info = get_token_data(token)
     try:
-        delete_paste(token, get_logged_in_user_id())
+        paste = get_paste(token, logged_in_user_id)
     except Exception as e:
-        return f"{e.args[0]} {e.args[1]}"
+        return "failed"
+
+    if token_info is None:
+        return "404 paste not found"
+
+    if not Permissions.can_delete_paste(token_info["level"], paste["owner"], logged_in_user_id):
+        return "403 forbidden"
+
+    delete_tokens_of_paste(token_info["pasteId"])
+    delete_votes_of_paste(token_info["pasteId"])
+    delete_messages_of_paste(token_info["pasteId"])
+    delete_paste(token_info["pasteId"])
     
     return redirect("/")
 
