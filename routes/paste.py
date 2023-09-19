@@ -98,7 +98,7 @@ def pastePost():
             logged_in_user_id
         )
         token = TokenRepository.add_new_token(pasteId, "modify")
-        add_new_token(pasteId, "view")
+        TokenRepository.add_new_token(pasteId, "view")
 
     return redirect(f"/paste/{token}")
 
