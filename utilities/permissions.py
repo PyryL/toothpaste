@@ -27,3 +27,8 @@ class Permissions:
         # modify-level token is always required
         # in addition, user must be paste owner if the paste was not created anonymously
         return token_level == "modify" and paste_owner_id == logged_in_user_id
+
+    @classmethod
+    def can_vote(cls, paste_publicity: str, paste_owner_id: int, logged_in_user_id: int) -> bool:
+        # require that user has permission to view the paste and is logged in
+        return Permissions.can_view_paste(paste_publicity, paste_owner_id, logged_in_user_id) and logged_in_user_id is not None

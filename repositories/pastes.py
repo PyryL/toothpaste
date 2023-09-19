@@ -4,14 +4,6 @@ from repositories.tokens import get_token_data, get_tokens_of_paste, generate_to
 from repositories.votes import delete_votes_of_paste
 from repositories.chat import delete_messages_of_paste
 
-def has_user_view_permission(token: str, logged_in_user_id: int) -> bool:
-    sql = "SELECT owner, publicity FROM pastes WHERE id=(SELECT paste FROM tokens WHERE token=:token)"
-    result = db.session.execute(text(sql), { "token": token })
-    if result.rowcount != 1:
-        return False
-    paste = result.fetchone()
-    return paste.publicity != "private" or logged_in_user_id == paste.owner
-
 def get_paste(pasteId: int) -> dict:
     """Load paste with given token from the database.
     Returns dictionary containing paste data if available.
