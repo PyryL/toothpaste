@@ -30,6 +30,14 @@ class ChatRepository:
         return result.fetchall()
 
     @classmethod
+    def get_paste_id_of_message(cls, messageId: int) -> int:
+        sql = "SELECT paste FROM chatmessages WHERE id=:messageId"
+        result = db.session.execute(text(sql), { "messageId": messageId })
+        if result.rowcount != 1:
+            return None
+        return result.fetchone().paste
+
+    @classmethod
     def delete_message(cls, id: int):
         sql = "DELETE FROM chatmessages WHERE id=:id"
         db.session.execute(text(sql), { "id": id })
