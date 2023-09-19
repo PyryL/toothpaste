@@ -3,7 +3,7 @@ from flask import request, redirect
 from utilities.session import get_logged_in_user_id
 from utilities.permissions import Permissions
 from repositories.tokens import get_token_data
-from repositories.chat import add_new_message, get_paste_owner_of_message, delete_message as delete_message_from_database
+from repositories.chat import add_new_message, delete_message as delete_message_from_database
 from repositories.pastes import get_paste
 
 @app.route("/chat", methods=["POST"])
