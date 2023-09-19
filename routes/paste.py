@@ -21,7 +21,7 @@ def readPaste(token):
 
     if not Permissions.can_view_paste(paste.publicity, paste.owner, logged_in_user_id):
         return "403 forbidden"
-    has_edit_permissions = Permissions.can_modify_paste(token_info["level"])
+    has_edit_permissions = Permissions.can_modify_paste(token_info["level"], paste.publicity, paste.owner, logged_in_user_id)
     has_delete_permission = Permissions.can_delete_paste(token_info["level"], paste.owner, logged_in_user_id)
     can_delete_chat_messages = Permissions.can_delete_chat_message(token_info["level"], paste.owner, logged_in_user_id)
 

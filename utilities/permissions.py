@@ -7,8 +7,8 @@ class Permissions:
         return paste_owner_id == logged_in_user_id and logged_in_user_id is not None
 
     @classmethod
-    def can_modify_paste(cls, token_level: str) -> bool:
-        return token_level == "modify"
+    def can_modify_paste(cls, token_level: str, paste_publicity: str, paste_owner_id: int, logged_in_user_id: int) -> bool:
+        return token_level == "modify" and Permissions.can_view_paste(paste_publicity, paste_owner_id, logged_in_user_id)
 
     @classmethod
     def can_delete_paste(cls, token_level: str, paste_owner_id: int, logged_in_user_id: int) -> bool:
