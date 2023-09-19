@@ -1,10 +1,7 @@
 from app import app, db
 from flask import render_template, redirect, request
 from sqlalchemy import text
-from repositories.pastes import get_paste, update_paste, add_new_paste, delete_paste
-from repositories.chat import get_messages_of_paste, delete_messages_of_paste
-from repositories.votes import get_votes_of_paste, delete_votes_of_paste
-from repositories.tokens import add_new_token, delete_tokens_of_paste, get_token_data, get_tokens_of_paste
+from repositories import PasteRepository, ChatRepository, VoteRepository, TokenRepository
 from utilities.session import get_logged_in_user_id
 from utilities.encryption import encrypt, decrypt
 from utilities.permissions import Permissions
@@ -12,10 +9,10 @@ from utilities.permissions import Permissions
 @app.route("/paste/<string:token>", methods=["GET", "POST"])
 def readPaste(token):
     logged_in_user_id = get_logged_in_user_id()
-    token_info = get_token_data(token)
+    token_info = TokenRepository.get_token_data(token)
     if token_info is None:
         return "404 paste not found"
-    paste = get_paste(token_info["pasteId"])
+    paste = PasteRepository.get_paste(token_info["pasteId"])
     if paste is None:
         return "404 paste not found"
 
@@ -36,8 +33,8 @@ def readPaste(token):
     else:
         content = paste.content
 
-    votes = get_votes_of_paste(token)
-    tokens = get_tokens_of_paste(token_info["pasteId"])
+    votes = VoteRepository.get_votes_of_paste(token)
+    tokens = TokenRepository.get_tokens_of_paste(token_info["pasteId"])
     view_token = next((t["token"] for t in tokens if t["level"] == "view"), None)
     modify_token = next((t["token"] for t in tokens if t["level"] == "modify"), None)
 
@@ -56,7 +53,7 @@ def readPaste(token):
         upVotes=votes["upvotes"],
         downVotes=votes["downvotes"],
         chatToken=token,
-        chatMessages=get_messages_of_paste(token),
+        chatMessages=ChatRepository.get_messages_of_paste(token),
         chatRemoveAvailable=can_delete_chat_messages)
 
 @app.route("/paste", methods=["POST"])
@@ -65,10 +62,10 @@ def pastePost():
     is_modify = request.form["modifyToken"] != ""
     logged_in_user_id = get_logged_in_user_id()
     if is_modify:
-        token_info = get_token_data(request.form["modifyToken"])
+        token_info = TokenRepository.get_token_data(request.form["modifyToken"])
         if token_info is None:
             return "404 paste not found"
-        paste = get_paste(token_info["pasteId"])
+        paste = PasteRepository.get_paste(token_info["pasteId"])
         if paste is None:
             return "404 paste not found"
         if not Permissions.can_modify_paste(token_info["level"], paste.publicity, paste.owner, logged_in_user_id):
@@ -83,7 +80,7 @@ def pastePost():
 
     # insert or update database
     if is_modify:
-        update_paste(
+        PasteRepository.update_paste(
             token_info["pasteId"],
             request.form["title"],
             content,
@@ -93,14 +90,14 @@ def pastePost():
         )
         token = request.form["modifyToken"]
     else:
-        pasteId = add_new_paste(
+        pasteId = PasteRepository.add_new_paste(
             request.form["title"],
             content,
             request.form["publicity"],
             is_encrypted,
             logged_in_user_id
         )
-        token = add_new_token(pasteId, "modify")
+        token = TokenRepository.add_new_token(pasteId, "modify")
         add_new_token(pasteId, "view")
 
     return redirect(f"/paste/{token}")
@@ -123,30 +120,30 @@ def askKey(token: str):
 @app.route("/paste/delete/<string:token>", methods=["POST"])
 def deletePaste(token: str):
     logged_in_user_id = get_logged_in_user_id()
-    token_info = get_token_data(token)
+    token_info = TokenRepository.get_token_data(token)
     if token_info is None:
         return "404 paste not found"
-    paste = get_paste(token_info["pasteId"])
+    paste = PasteRepository.get_paste(token_info["pasteId"])
     if paste is None:
         return "404 paste not found"
 
     if not Permissions.can_delete_paste(token_info["level"], paste.owner, logged_in_user_id):
         return "403 forbidden"
 
-    delete_tokens_of_paste(token_info["pasteId"])
-    delete_votes_of_paste(token_info["pasteId"])
-    delete_messages_of_paste(token_info["pasteId"])
-    delete_paste(token_info["pasteId"])
+    TokenRepository.delete_tokens_of_paste(token_info["pasteId"])
+    VoteRepository.delete_votes_of_paste(token_info["pasteId"])
+    ChatRepository.delete_messages_of_paste(token_info["pasteId"])
+    PasteRepository.delete_paste(token_info["pasteId"])
     
     return redirect("/")
 
 @app.route("/paste/regenerate-tokens/<string:token>", methods=["POST"])
 def regenerateTokens(token: str):
     logged_in_user_id = get_logged_in_user_id()
-    token_info = get_token_data(token)
+    token_info = TokenRepository.get_token_data(token)
     if token_info is None:
         return "404 paste not found"
-    paste = get_paste(token_info["pasteId"])
+    paste = PasteRepository.get_paste(token_info["pasteId"])
     if paste is None:
         return "404 paste not found"
 
@@ -154,8 +151,8 @@ def regenerateTokens(token: str):
         return "403 forbidden"
 
     # delete existing and generate new
-    delete_tokens_of_paste(token_info["pasteId"])
-    modifyLevelToken = add_new_token(token_info["pasteId"], "modify")
-    add_new_token(token_info["pasteId"], "view")
+    TokenRepository.delete_tokens_of_paste(token_info["pasteId"])
+    modifyLevelToken = TokenRepository.add_new_token(token_info["pasteId"], "modify")
+    TokenRepository.add_new_token(token_info["pasteId"], "view")
 
     return redirect(f"/paste/{modifyLevelToken}")
