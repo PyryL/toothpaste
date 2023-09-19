@@ -3,7 +3,7 @@ from flask import render_template, redirect, request
 from sqlalchemy import text
 from repositories import PasteRepository, ChatRepository, VoteRepository, TokenRepository
 from utilities.session import get_logged_in_user_id
-from utilities.encryption import encrypt, decrypt
+from utilities.encryption import Encryption
 from utilities.permissions import Permissions
 
 @app.route("/paste/<string:token>", methods=["GET", "POST"])
@@ -26,7 +26,7 @@ def readPaste(token):
         return redirect(f"/ask-key/{token}")
 
     if paste.is_encrypted:
-        content = decrypt(bytes.fromhex(paste.content), request.form["decryption-key"])
+        content = Encryption.decrypt(bytes.fromhex(paste.content), request.form["decryption-key"])
         if content is None:
             return redirect(f"/ask-key/{token}?status=incorrect")
         content = content.decode("utf-8")
@@ -74,7 +74,7 @@ def pastePost():
     # encrypt paste content if encryption key is provided
     is_encrypted = request.form["encryption-key"] != ""
     if is_encrypted:
-        content = encrypt(request.form["content"].encode("utf-8"), request.form["encryption-key"]).hex()
+        content = Encryption.encrypt(request.form["content"].encode("utf-8"), request.form["encryption-key"]).hex()
     else:
         content = request.form["content"]
 
