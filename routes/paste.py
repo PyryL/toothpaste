@@ -4,48 +4,61 @@ from sqlalchemy import text
 from repositories.pastes import get_paste, update_paste, add_new_paste, delete_paste
 from repositories.chat import get_messages_of_paste, delete_messages_of_paste
 from repositories.votes import get_votes_of_paste, delete_votes_of_paste
-from repositories.tokens import add_new_token, delete_tokens_of_paste, get_token_data
+from repositories.tokens import add_new_token, delete_tokens_of_paste, get_token_data, get_tokens_of_paste
 from utilities.session import get_logged_in_user_id
 from utilities.encryption import encrypt, decrypt
 from utilities.permissions import Permissions
 
 @app.route("/paste/<string:token>", methods=["GET", "POST"])
 def readPaste(token):
-    try:
-        paste = get_paste(token, get_logged_in_user_id())
-    except Exception as e:
-        return f"{e.args[0]} {e.args[1]}"
+    logged_in_user_id = get_logged_in_user_id()
+    token_info = get_token_data(token)
+    if token_info is None:
+        return "404 paste not found"
+    paste = get_paste(token_info["pasteId"])
+    if paste is None:
+        return "404 paste not found"
 
-    if paste["is_encrypted"] and "decryption-key" not in request.form:
+    if not Permissions.can_view_paste(paste.publicity, paste.owner, logged_in_user_id):
+        return "403 forbidden"
+    has_edit_permissions = Permissions.can_modify_paste(token_info["level"])
+    has_delete_permission = Permissions.can_delete_paste(token_info["level"], paste.owner, logged_in_user_id)
+    can_delete_chat_messages = Permissions.can_delete_chat_message(token_info["level"], paste.owner, logged_in_user_id)
+
+    if paste.is_encrypted and "decryption-key" not in request.form:
         return redirect(f"/ask-key/{token}")
 
-    if paste["is_encrypted"]:
-        content = decrypt(bytes.fromhex(paste["content"]), request.form["decryption-key"])
+    if paste.is_encrypted:
+        content = decrypt(bytes.fromhex(paste.content), request.form["decryption-key"])
         if content is None:
             return redirect(f"/ask-key/{token}?status=incorrect")
         content = content.decode("utf-8")
     else:
-        content = paste["content"]
+        content = paste.content
 
     votes = get_votes_of_paste(token)
+    tokens = get_tokens_of_paste(token_info["pasteId"])
+    view_token = next((t["token"] for t in tokens if t["level"] == "view"), None)
+    modify_token = next((t["token"] for t in tokens if t["level"] == "modify"), None)
+
     return render_template("paste.html",
         header="Read paste",
-        share_view_token=paste["view_token"] if paste["has_edit_permissions"] else "",
-        share_modify_token=paste["modify_token"] if paste["has_edit_permissions"] else "",
-        modifyToken=token if paste["has_edit_permissions"] else "",
-        fieldsDisabled="" if paste["has_edit_permissions"] else "disabled",
-        pastePublicity=paste["publicity"],
-        encryption_key=request.form["decryption-key"] if paste["is_encrypted"] else "",
-        pasteTitle=paste["title"],
+        share_view_token=view_token if has_edit_permissions else "",
+        share_modify_token=modify_token if has_edit_permissions else "",
+        modifyToken=token if has_edit_permissions else "",
+        fieldsDisabled="" if has_edit_permissions else "disabled",
+        pastePublicity=paste.publicity,
+        encryption_key=request.form["decryption-key"] if paste.is_encrypted else "",
+        pasteTitle=paste.title,
         pasteContent=content,
-        pasteDeleteAvailable=(paste["is_owner"] or not paste["has_owner"]) and paste["has_edit_permissions"],
+        pasteDeleteAvailable=has_delete_permission,
         votingAvailable=True,
         upVotes=votes["upvotes"],
         downVotes=votes["downvotes"],
         chatToken=token,
         chatMessages=get_messages_of_paste(token),
-        chatRemoveAvailable=paste["is_owner"])
-    
+        chatRemoveAvailable=can_delete_chat_messages)
+
 @app.route("/paste", methods=["POST"])
 def pastePost():
     if request.form["encryption-key"] == "":
@@ -94,15 +107,13 @@ def askKey(token: str):
 def deletePaste(token: str):
     logged_in_user_id = get_logged_in_user_id()
     token_info = get_token_data(token)
-    try:
-        paste = get_paste(token, logged_in_user_id)
-    except Exception as e:
-        return "failed"
-
     if token_info is None:
         return "404 paste not found"
+    paste = get_paste(token_info["pasteId"])
+    if paste is None:
+        return "404 paste not found"
 
-    if not Permissions.can_delete_paste(token_info["level"], paste["owner"], logged_in_user_id):
+    if not Permissions.can_delete_paste(token_info["level"], paste.owner, logged_in_user_id):
         return "403 forbidden"
 
     delete_tokens_of_paste(token_info["pasteId"])
@@ -116,15 +127,13 @@ def deletePaste(token: str):
 def regenerateTokens(token: str):
     logged_in_user_id = get_logged_in_user_id()
     token_info = get_token_data(token)
-    try:
-        paste = get_paste(token, logged_in_user_id)
-    except Exception as e:
-        return "failed"
-
     if token_info is None:
         return "404 paste not found"
+    paste = get_paste(token_info["pasteId"])
+    if paste is None:
+        return "404 paste not found"
 
-    if not Permissions.can_regenerate_tokens(token_info["level"], paste["owner"], logged_in_user_id):
+    if not Permissions.can_regenerate_tokens(token_info["level"], paste.owner, logged_in_user_id):
         return "403 forbidden"
 
     # delete existing and generate new

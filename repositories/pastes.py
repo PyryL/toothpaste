@@ -12,40 +12,33 @@ def has_user_view_permission(token: str, logged_in_user_id: int) -> bool:
     paste = result.fetchone()
     return paste.publicity != "private" or logged_in_user_id == paste.owner
 
-def get_paste(token: str, logged_in_user_id: int) -> dict:
+def get_paste(pasteId: int) -> dict:
     """Load paste with given token from the database.
     Returns dictionary containing paste data if available.
     Raises an exception with data (status_code, description) if unavailable.
     """
 
-    token_info = get_token_data(token)
-    if token_info is None:
-        raise Exception(404, "paste not found")
-
     sql = "SELECT title, content, owner, publicity, is_encrypted FROM pastes WHERE id=:id"
-    result = db.session.execute(text(sql), { "id": token_info["pasteId"] })
+    result = db.session.execute(text(sql), { "id": pasteId })
     if result.rowcount != 1:
-        raise Exception(404, "paste not found")
+        return None
     paste = result.fetchone()
 
-    if paste.publicity == "private" and logged_in_user_id != paste.owner:
-        raise Exception(403, "not allowed to view this paste")
+    return paste
 
-    all_tokens = get_tokens_of_paste(token_info["pasteId"])
+    # return {
+    #     "title": paste.title,
+    #     "content": paste.content,
+    #     "publicity": paste.publicity,
+    #     "is_encrypted": paste.is_encrypted,
+    #     "has_edit_permissions": token_info["level"] == "modify",
+    #     "is_owner": logged_in_user_id == paste.owner and logged_in_user_id is not None,
+    #     "has_owner": paste.owner is not None,
+    #     "view_token": next((t["token"] for t in all_tokens if t["level"] == "view"), None),
+    #     "modify_token": next((t["token"] for t in all_tokens if t["level"] == "modify"), None),
 
-    return {
-        "title": paste.title,
-        "content": paste.content,
-        "publicity": paste.publicity,
-        "is_encrypted": paste.is_encrypted,
-        "has_edit_permissions": token_info["level"] == "modify",
-        "is_owner": logged_in_user_id == paste.owner and logged_in_user_id is not None,
-        "has_owner": paste.owner is not None,
-        "view_token": next((t["token"] for t in all_tokens if t["level"] == "view"), None),
-        "modify_token": next((t["token"] for t in all_tokens if t["level"] == "modify"), None),
-
-        "owner": paste.owner
-    }
+    #     "owner": paste.owner
+    # }
 
 def update_paste(token: str, title: str, content: str, publicity: str, is_encrypted: bool, logged_in_user_id: int):
     """Updates paste data in database."""
@@ -106,21 +99,6 @@ def add_new_paste(title: str, content: str, publicity: str, is_encrypted: bool, 
     return modifyLevelToken
 
 def delete_paste(pasteId: int):
-    # token_info = get_token_data(token)
-    # if token_info is None:
-    #     raise Exception(404, "paste not found")
-
-    # # check permission
-    # if token_info["level"] != "modify":
-    #     raise Exception(403, "you are not allowed to delete this paste")
-    # sql = "SELECT owner FROM pastes WHERE id=:pasteId"
-    # result = db.session.execute(text(sql), { "pasteId": token_info["pasteId"] })
-    # if result.rowcount != 1:
-    #     raise Exception(404, "paste not found")
-    # paste = result.fetchone()
-    # if paste.owner != logged_in_user_id:
-    #     raise Exception(403, "you are not the owner")
-
     sql = "DELETE FROM pastes WHERE id=:pasteId"
     db.session.execute(text(sql), { "pasteId": pasteId })
     db.session.commit()
