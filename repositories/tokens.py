@@ -1,6 +1,6 @@
 from app import db
 from sqlalchemy import text
-from random import choices
+from Crypto.Random.random import choice
 from string import ascii_letters, digits
 
 class TokenRepository:
@@ -9,7 +9,7 @@ class TokenRepository:
         chars = ascii_letters + digits
         sql = "SELECT COUNT(*) AS count FROM tokens WHERE token=:token"
         while True:
-            token = "".join(choices(chars, k=12))
+            token = "".join([choice(chars) for _ in range(12)])
             existing_count = int(db.session.execute(text(sql), { "token": token }).fetchone().count)
             if existing_count == 0:
                 return token

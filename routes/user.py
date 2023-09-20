@@ -3,6 +3,7 @@ from flask import render_template, redirect, request, session
 from repositories import UserRepository
 from utilities.session import set_logged_in_user_id, is_user_logged_in
 from utilities.two_factor_auth import TwoFactorAuthentication
+from utilities.validation import InputValidation
 
 @app.route("/log-in", methods=["GET"])
 def getLogIn():
@@ -38,13 +39,15 @@ def getSignUp():
 @app.route("/sign-up", methods=["POST"])
 def postSignUp():
     # check that given credentials meet requirements
-    # TODO: add more criteria for security
+    username, password = request.form["username"], request.form["password1"]
     if request.form["password1"] != request.form["password2"] or \
-        len(request.form["password1"]) < 1 or len(request.form["password1"]) > 72 or \
-        len(request.form["username"]) < 1 or len(request.form["username"]) > 12:
-        return "criteria not met"
-    
+        not InputValidation.is_valid_password(password) or \
+        not InputValidation.is_valid_username(username):
+        return "username and/or password criteria not met"
+
     # add user to database
-    userid = UserRepository.add_new_user(request.form["username"], request.form["password1"])
+    userid = UserRepository.add_new_user(username, password)
+    if userid is None:
+        return redirect("/sign-up?status=username-exists")
     set_logged_in_user_id(userid)
     return redirect("/")

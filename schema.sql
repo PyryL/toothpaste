@@ -7,7 +7,7 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 CREATE TABLE Users (
     id SERIAL PRIMARY KEY,
-    username TEXT NOT NULL,
+    username TEXT UNIQUE NOT NULL,
     password_hash TEXT NOT NULL,
     totpSecret TEXT DEFAULT NULL
 );
@@ -45,5 +45,6 @@ CREATE TABLE Votes (
     id SERIAL PRIMARY KEY,
     paste INTEGER REFERENCES Pastes NOT NULL,
     voter INTEGER REFERENCES Users NOT NULL,
-    is_upvote BOOLEAN NOT NULL
+    is_upvote BOOLEAN NOT NULL,
+    UNIQUE (paste, voter)
 );

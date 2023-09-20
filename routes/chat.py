@@ -28,10 +28,12 @@ def delete_message(id: int):
     paste = PasteRepository.get_paste(token_info["pasteId"])
     if paste is None:
         return f"404 paste not found"
-    # TODO: make sure that token is related to the same paste with chat message
 
     if not Permissions.can_delete_chat_message(token_info["level"], paste.owner, logged_in_user_id):
         return "403 forbidden"
+    # make sure that token is related to the same paste with chat message
+    if ChatRepository.get_paste_id_of_message(id) != token_info["pasteId"]:
+        return "400 bad request"
 
     ChatRepository.delete_message(id)
     return redirect(f"/paste/{token}")
