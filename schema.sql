@@ -8,7 +8,8 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
 CREATE TABLE Users (
     id SERIAL PRIMARY KEY,
     username TEXT UNIQUE NOT NULL,
-    password_hash TEXT NOT NULL
+    password_hash TEXT NOT NULL,
+    totpSecret TEXT DEFAULT NULL
 );
 
 CREATE TYPE Publicity AS ENUM ('listed', 'unlisted', 'private');

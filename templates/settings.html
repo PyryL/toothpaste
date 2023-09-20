@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>User settings &ndash; ToothPaste</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="utf-8">
+    </head>
+    <body>
+        <h1>Your settings</h1>
+        <p>
+            <b>Username:</b> {{ username }}
+        </p>
+        <h2>Two-factor authentication</h2>
+        {% if has2FAEnabled %}
+        <p>2FA enabled</p>
+        {% else %}
+        <p>
+            If you want, you can start using two-factor authentication on ToothPaste.
+            Start by scanning the QR code below with you authenticator app or enter the details manually.
+            When ready, click Next.
+        </p>
+        <img src="{{ qrcode(TwoFAUri) }}" alt="QR code" width="200" height="200">
+        <pre>{{ TwoFAUri }}</pre>
+        <form method="POST" action="/settings/setup-2fa">
+            <input type="hidden" name="totp-secret" value="{{ totpSecret }}">
+            <label for="totp-code">Code:</label>
+            <input type="text" name="totp-code" id="totp-code" placeholder="123456"><br>
+            <input type="submit" value="Setup 2FA">
+        </form>
+        {% endif %}
+    </body>
+</html>
