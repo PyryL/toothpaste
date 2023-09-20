@@ -1,83 +1,78 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <title>{{ header }} &ndash; ToothPaste</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta charset="utf-8">
-        <style>
-            .chat-message {
-                border: 1px solid black;
-            }
-        </style>
-    </head>
-    <body>
-        <h1>{{ header }}</h1>
-        {% if share_view_token and share_modify_token %}
-        <p>
-            <label for="share-view">View:</label>
-            <input id="share-view" value="{{ share_view_token }}" disabled><br>
-            <label for="share-modify">Modify:</label>
-            <input id="share-modify" value="{{ share_modify_token }}" disabled>
-            <form method="POST" action="/paste/regenerate-tokens/{{ modifyToken }}">
-                <input type="submit" value="Regenerate tokens">
-            </form>
-        </p>
-        {% endif %}
-        <form method="POST" action="/paste">
-            <input type="hidden" name="modifyToken" value="{{ modifyToken }}">
-            <p>
-                <select name="publicity" {{ fieldsDisabled }}>
-                    <option disabled>-- Publicity --</option>
-                    <option value="listed" {{ 'selected' if pastePublicity == 'listed' else '' }}>Listed on the front page</option>
-                    <option value="unlisted" {{ 'selected' if pastePublicity == 'unlisted' else '' }}>Anyone with link</option>
-                    <option value="private" {{ 'selected' if pastePublicity == 'private' else '' }}>Only for you</option>
-                </select>
-            </p>
-            <p>
-                <input type="text" id="encryption-key" name="encryption-key" placeholder="Encryption key (optional)" value="{{ encryption_key }}" {{ fieldsDisabled }}>
-            </p>
-            <input type="text" name="title" placeholder="Paste title" minlength="1" {{ fieldsDisabled }} value="{{ pasteTitle }}"><br>
-            <textarea name="content" rows="8" cols="30" placeholder="Paste here..." {{ fieldsDisabled }}>{{ pasteContent }}</textarea><br>
-            <input type="submit" value="Save" {{ fieldsDisabled }}>
-        </form>
-        {% if pasteDeleteAvailable %}
-        <p>
-            <form method="POST" action="/paste/delete/{{ modifyToken }}">
-                <input type="submit" value="Delete paste" style="color: red">
-            </form>
-        </p>
-        {% endif %}
-        {% if votingAvailable %}
-        <h2>Vote</h2>
-        <p>{{ upVotes }} &#9650; / {{ downVotes }} &#9660;</p>
-        <form method="POST" action="/vote/up/{{ chatToken }}">
-            <input type="submit" value="Vote up" {{ voteDisabled }}>
-        </form>
-        <form method="POST" action="/vote/down/{{ chatToken }}">
-            <input type="submit" value="Vote down" {{ voteDisabled }}>
-        </form>
-        {% endif %}
-        {% if chatToken %}
-        <h2>Chat</h2>
-        {% for message in chatMessages %}
-        <div class="chat-message">
-            <p>{{ message.content }}</p>
-            <span>{{ message.creator if message.creator else '<i>Anonymous</i>' | safe }}</span>
-            <span>{{ message.creation_date }}</span>
-            {% if chatRemoveAvailable %}
-            <br>
-            <form method="POST" action="/chat/delete/{{ message.id }}">
-                <input type="hidden" name="token" value="{{ chatToken }}">
-                <input type="submit" value="Remove">
-            </form>
-            {% endif %}
-        </div>
-        {% endfor %}
-        <form method="POST" action="/chat">
-            <input type="hidden" name="token" value="{{ chatToken }}">
-            <textarea name="content" rows="3" cols="30" placeholder="Message here..." minlength="1"></textarea><br>
-            <input type="submit" value="Send">
-        </form>
-        {% endif %}
-    </body>
-</html>
+{% extends "layout.html" %}
+{% block title %}{{ header }}{% endblock %}
+{% block customHead %}
+<style>
+    .chat-message {
+        border: 1px solid black;
+    }
+</style>
+{% endblock %}
+{% block content %}
+{% if share_view_token and share_modify_token %}
+<p>
+    <label for="share-view">View:</label>
+    <input id="share-view" value="{{ share_view_token }}" disabled><br>
+    <label for="share-modify">Modify:</label>
+    <input id="share-modify" value="{{ share_modify_token }}" disabled>
+    <form method="POST" action="/paste/regenerate-tokens/{{ modifyToken }}">
+        <input type="submit" value="Regenerate tokens">
+    </form>
+</p>
+{% endif %}
+<form method="POST" action="/paste">
+    <input type="hidden" name="modifyToken" value="{{ modifyToken }}">
+    <p>
+        <select name="publicity" {{ fieldsDisabled }}>
+            <option disabled>-- Publicity --</option>
+            <option value="listed" {{ 'selected' if pastePublicity == 'listed' else '' }}>Listed on the front page</option>
+            <option value="unlisted" {{ 'selected' if pastePublicity == 'unlisted' else '' }}>Anyone with link</option>
+            <option value="private" {{ 'selected' if pastePublicity == 'private' else '' }}>Only for you</option>
+        </select>
+    </p>
+    <p>
+        <input type="text" id="encryption-key" name="encryption-key" placeholder="Encryption key (optional)" value="{{ encryption_key }}" {{ fieldsDisabled }}>
+    </p>
+    <input type="text" name="title" placeholder="Paste title" minlength="1" {{ fieldsDisabled }} value="{{ pasteTitle }}"><br>
+    <textarea name="content" rows="8" cols="30" placeholder="Paste here..." {{ fieldsDisabled }}>{{ pasteContent }}</textarea><br>
+    <input type="submit" value="Save" {{ fieldsDisabled }}>
+</form>
+{% if pasteDeleteAvailable %}
+<p>
+    <form method="POST" action="/paste/delete/{{ modifyToken }}">
+        <input type="submit" value="Delete paste" style="color: red">
+    </form>
+</p>
+{% endif %}
+{% if votingAvailable %}
+<h2>Vote</h2>
+<p>{{ upVotes }} &#9650; / {{ downVotes }} &#9660;</p>
+<form method="POST" action="/vote/up/{{ chatToken }}">
+    <input type="submit" value="Vote up" {{ voteDisabled }}>
+</form>
+<form method="POST" action="/vote/down/{{ chatToken }}">
+    <input type="submit" value="Vote down" {{ voteDisabled }}>
+</form>
+{% endif %}
+{% if chatToken %}
+<h2>Chat</h2>
+{% for message in chatMessages %}
+<div class="chat-message">
+    <p>{{ message.content }}</p>
+    <span>{{ message.creator if message.creator else '<i>Anonymous</i>' | safe }}</span>
+    <span>{{ message.creation_date }}</span>
+    {% if chatRemoveAvailable %}
+    <br>
+    <form method="POST" action="/chat/delete/{{ message.id }}">
+        <input type="hidden" name="token" value="{{ chatToken }}">
+        <input type="submit" value="Remove">
+    </form>
+    {% endif %}
+</div>
+{% endfor %}
+<form method="POST" action="/chat">
+    <input type="hidden" name="token" value="{{ chatToken }}">
+    <textarea name="content" rows="3" cols="30" placeholder="Message here..." minlength="1"></textarea><br>
+    <input type="submit" value="Send">
+</form>
+{% endif %}
+{% endblock %}

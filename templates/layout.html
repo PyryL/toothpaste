@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>{% block title %}{% endblock %} &ndash; ToothPaste</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="utf-8">
+        {% block customHead %}{% endblock %}
+    </head>
+    <body>
+        <h1>{{ self.title() }}</h1>
+        {% block content %}{% endblock %}
+    </body>
+</html>

@@ -1,21 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <title>Log in &ndash; ToothPaste</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta charset="utf-8">
-    </head>
-    <body>
-        <h1>Log in</h1>
-        <p><a href="/sign-up">No account yet? Sign up here.</a></p>
-        <form action="/log-in" method="POST">
-            <label for="username">Username:</label>
-            <input type="text" name="username" id="username"><br>
-            <label for="password">Password:</label>
-            <input type="password" name="password" id="password"><br>
-            <label for="totp-code">2FA code:</label>
-            <input type="text" name="totp-code" id="totp-code" placeholder="Optional"><br>
-            <input type="submit" value="Log in">
-        </form>
-    </body>
-</html>
+{% extends "layout.html" %}
+{% block title %}Log in{% endblock %}
+{% block content %}
+<p><a href="/sign-up">No account yet? Sign up here.</a></p>
+<form action="/log-in" method="POST">
+    <label for="username">Username:</label>
+    <input type="text" name="username" id="username"><br>
+    <label for="password">Password:</label>
+    <input type="password" name="password" id="password"><br>
+    <label for="totp-code">2FA code:</label>
+    <input type="text" name="totp-code" id="totp-code" placeholder="Optional"><br>
+    <input type="submit" value="Log in">
+</form>
+{% endblock %}

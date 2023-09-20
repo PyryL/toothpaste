@@ -1,25 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <title>Encryption key &ndash; ToothPaste</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta charset="utf-8">
-    </head>
-    <body>
-        <h1>Encryption key</h1>
-        {% if is_incorrect %}
-        <div style="color:red">
-            Incorrect key, please try again.
-        </div>
-        {% endif %}
-        <p>
-            This paste is protected with encryption.
-            Please enter decryption key below to view the paste.
-        </p>
-        <form action="/paste/{{ token }}" method="POST">
-            <label for="key">Key:</label>
-            <input type="text" name="decryption-key" id="key"><br>
-            <input type="submit" value="Next">
-        </form>
-    </body>
-</html>
+{% extends "layout.html" %}
+{% block title %}Encryption key{% endblock %}
+{% block content %}
+{% if is_incorrect %}
+<div style="color:red">
+    Incorrect key, please try again.
+</div>
+{% endif %}
+<p>
+    This paste is protected with encryption.
+    Please enter decryption key below to view the paste.
+</p>
+<form action="/paste/{{ token }}" method="POST">
+    <label for="key">Key:</label>
+    <input type="text" name="decryption-key" id="key"><br>
+    <input type="submit" value="Next">
+</form>
+{% endblock %}
