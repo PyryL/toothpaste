@@ -1,12 +1,22 @@
 {% extends "layout.html" %}
 {% block title %}Front page{% endblock %}
 {% block content %}
-<a href="/new-paste">+ Create new paste</a>
+<h2>Latest pastes</h2>
 <ul>
-    {% for paste in pastes %}
+    {% for paste in latestPastes %}
     <li>
         <a href="/paste/{{ paste.token }}">{{ paste.title }}</a>
     </li>
     {% endfor %}
 </ul>
+{% if isLoggedIn %}
+<h2>My pastes</h2>
+<ul>
+    {% for paste in myPastes %}
+    <li>
+        <a href="/paste/{{ paste.token }}">{{ paste.title }}</a>
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
 {% endblock %}

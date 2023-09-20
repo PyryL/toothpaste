@@ -53,6 +53,8 @@
     <input type="submit" value="Vote down" {{ voteDisabled }}>
 </form>
 {% endif %}
+{% endblock %}
+{% block sidebar %}
 {% if chatToken %}
 <h2>Chat</h2>
 {% for message in chatMessages %}
