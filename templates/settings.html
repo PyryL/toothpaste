@@ -1,25 +1,74 @@
 {% extends "layout.html" %}
-{% block title %}Your settings{% endblock %}
+{% block title %}User settings{% endblock %}
+{% block customHead %}
+<style>
+    .code {
+        font-family: monospace;
+        font-size: 0.9em;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
 {% block content %}
 <p>
     <b>Username:</b> {{ username }}
 </p>
 <h2>Two-factor authentication</h2>
 {% if has2FAEnabled %}
-<p>2FA enabled</p>
+<p>
+    <span class="badge rounded-pill text-bg-success"><i class="bi bi-shield-check"></i></span>
+    2FA is already enabled.
+</p>
 {% else %}
 <p>
     If you want, you can start using two-factor authentication on ToothPaste.
-    Start by scanning the QR code below with you authenticator app or enter the details manually.
-    When ready, click Next.
+    Just follow these easy steps:
+    <ol>
+        <li>
+            Scan the QR code below with your authenticator app.
+            <span class="text-secondary">
+                You can also
+                <a class="btn btn-link" style="display:inline; padding:0; vertical-align:baseline" role="button" href="#twofa-manual-info" data-bs-toggle="collapse" aria-expanded="false" aria-controls="twofa-manual-info">
+                    enter the details manually</a>.
+            </span>
+        </li>
+        <li>Enter the six-digit code from your app into the field below.</li>
+        <li>Click Setup to activate 2FA.</li>
+        <li>From now on, every time you log in to ToothPaste, you are asked the code for extra security.</li>
+    </ol>
 </p>
-<img src="{{ qrcode(TwoFAUri) }}" alt="QR code" width="200" height="200">
-<pre>{{ TwoFAUri }}</pre>
+<img src="{{ qrcode(TwoFAUri) }}" alt="QR code" width="180" height="180" class="img-thumbnail">
+<p>
+    <div class="collapse" id="twofa-manual-info">
+        <table>
+            <tr>
+                <td>2FA type</td>
+                <td>TOTP</td>
+            </tr>
+            <tr>
+                <td>Interval</td>
+                <td>30 seconds</td>
+            </tr>
+            <tr>
+                <td>Digits</td>
+                <td>6</td>
+            </tr>
+            <tr>
+                <td>Base32 secret</td>
+                <td><span class="code">{{ totpSecret }}</span></td>
+            </tr>
+        </table>
+    </div>
+</p>
 <form method="POST" action="/settings/setup-2fa">
     <input type="hidden" name="totp-secret" value="{{ totpSecret }}">
-    <label for="totp-code">Code:</label>
-    <input type="text" name="totp-code" id="totp-code" placeholder="123456"><br>
-    <input type="submit" value="Setup 2FA">
+    <div class="form-group col-6">
+        <label for="totp-code">Code:</label>
+        <input type="text" name="totp-code" id="totp-code" class="form-control" placeholder="123456">
+    </div>
+    <div class="form-group col-6">
+        <input type="submit" value="Setup" class="btn btn-primary">
+    </div>
 </form>
 {% endif %}
 {% endblock %}
