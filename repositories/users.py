@@ -42,3 +42,11 @@ class UserRepository:
         result = db.session.execute(text(sql), values)
         db.session.commit()
         return result.fetchone().id
+
+    @classmethod
+    def get_user_details(cls, userId: int):
+        sql = "SELECT username FROM users WHERE id=:id"
+        result = db.session.execute(text(sql), { "id": userId })
+        if result.rowcount != 1:
+            return None
+        return result.fetchone()

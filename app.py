@@ -12,3 +12,4 @@ from routes import paste
 from routes import user
 from routes import chat
 from routes import votes
+from routes import settings
