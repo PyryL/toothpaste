@@ -15,3 +15,8 @@ class TwoFactorAuthentication:
             "secret": secret,
             "provisioning_uri": provisioning_uri
         }
+
+    @classmethod
+    def validate_2FA_code(cls, totp_secret: str, code: str) -> bool:
+        totp = pyotp.TOTP(totp_secret)
+        return totp.verify(code)

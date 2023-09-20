@@ -45,8 +45,16 @@ class UserRepository:
 
     @classmethod
     def get_user_details(cls, userId: int):
-        sql = "SELECT username FROM users WHERE id=:id"
+        sql = "SELECT username, totpSecret IS NOT NULL AS has_2fa_enabled FROM users WHERE id=:id"
         result = db.session.execute(text(sql), { "id": userId })
         if result.rowcount != 1:
             return None
-        return result.fetchone()
+        x = result.fetchone()
+        print(x._fields)
+        return x
+
+    @classmethod
+    def add_2fa_secret_to_user(cls, userId: int, secret: str):
+        sql = "UPDATE users SET totpSecret=:secret WHERE id=:id"
+        db.session.execute(text(sql), { "secret": secret, "id": userId })
+        db.session.commit()
