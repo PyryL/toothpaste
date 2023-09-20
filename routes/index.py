@@ -1,6 +1,7 @@
 from app import app, db
 from flask import render_template
 from sqlalchemy.sql import text
+from utilities.session import is_user_logged_in
 
 @app.route("/")
 def index():
@@ -12,4 +13,4 @@ def index():
         LIMIT 10
     """
     pastes = db.session.execute(text(sql)).fetchall()
-    return render_template("frontpage.html", pastes=pastes)
+    return render_template("frontpage.html", isLoggedIn=is_user_logged_in(), pastes=pastes)
