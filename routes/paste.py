@@ -41,6 +41,7 @@ def readPaste(token):
     return render_template("paste.html",
         isLoggedIn=is_user_logged_in(),
         header="Read paste",
+        is_modify=has_edit_permissions,
         share_view_token=view_token if has_edit_permissions else "",
         share_modify_token=modify_token if has_edit_permissions else "",
         modifyToken=token if has_edit_permissions else "",
@@ -108,6 +109,7 @@ def newPaste():
     return render_template("paste.html",
         isLoggedIn=is_user_logged_in(),
         header="New paste",
+        is_modify=True,
         fieldsDisabled="",
         pasteTitle="",
         pasteContent="",)

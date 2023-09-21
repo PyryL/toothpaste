@@ -25,6 +25,7 @@
 {% endif %}
 <form method="POST" action="/paste">
     <input type="hidden" name="modifyToken" value="{{ modifyToken }}">
+    {% if is_modify %}
     <div class="mb-3">
         <label for="publicity">Publicity:</label>
         <select name="publicity" id="publicity" class="form-control" {{ fieldsDisabled }}>
@@ -38,6 +39,7 @@
         <input type="password" id="encryption-key" name="encryption-key" class="form-control" placeholder="(optional)" value="{{ encryption_key }}" aria-describedby="encryption-help" {{ fieldsDisabled }}>
         <span id="encryption-help" class="form-text">If encryption key is provided, everyone is required to enter it before viewing this paste. It can not be restored if you forget it.</span>
     </div>
+    {% endif %}
     <div class="mb-2">
         <input type="text" name="title" id="title" class="form-control" placeholder="Paste title" minlength="1" {{ fieldsDisabled }} value="{{ pasteTitle }}"><br>
     </div>
