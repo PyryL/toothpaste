@@ -2,6 +2,10 @@
 {% block title %}{{ header }}{% endblock %}
 {% block customHead %}
 <style>
+    #title {
+        font-size: 1.2em;
+        font-weight: 600;
+    }
     .chat-message {
         border: 1px solid black;
     }
@@ -21,20 +25,28 @@
 {% endif %}
 <form method="POST" action="/paste">
     <input type="hidden" name="modifyToken" value="{{ modifyToken }}">
-    <p>
-        <select name="publicity" {{ fieldsDisabled }}>
-            <option disabled>-- Publicity --</option>
+    <div class="mb-3">
+        <label for="publicity">Publicity:</label>
+        <select name="publicity" id="publicity" class="form-control" {{ fieldsDisabled }}>
             <option value="listed" {{ 'selected' if pastePublicity == 'listed' else '' }}>Listed on the front page</option>
             <option value="unlisted" {{ 'selected' if pastePublicity == 'unlisted' else '' }}>Anyone with link</option>
             <option value="private" {{ 'selected' if pastePublicity == 'private' else '' }}>Only for you</option>
         </select>
-    </p>
-    <p>
-        <input type="text" id="encryption-key" name="encryption-key" placeholder="Encryption key (optional)" value="{{ encryption_key }}" {{ fieldsDisabled }}>
-    </p>
-    <input type="text" name="title" placeholder="Paste title" minlength="1" {{ fieldsDisabled }} value="{{ pasteTitle }}"><br>
-    <textarea name="content" rows="8" cols="30" placeholder="Paste here..." {{ fieldsDisabled }}>{{ pasteContent }}</textarea><br>
-    <input type="submit" value="Save" {{ fieldsDisabled }}>
+    </div>
+    <div class="mb-3">
+        <label for="encryption-key">Encryption key:</label>
+        <input type="password" id="encryption-key" name="encryption-key" class="form-control" placeholder="(optional)" value="{{ encryption_key }}" aria-describedby="encryption-help" {{ fieldsDisabled }}>
+        <span id="encryption-help" class="form-text">If encryption key is provided, everyone is required to enter it before viewing this paste. It can not be restored if you forget it.</span>
+    </div>
+    <div class="mb-2">
+        <input type="text" name="title" id="title" class="form-control" placeholder="Paste title" minlength="1" {{ fieldsDisabled }} value="{{ pasteTitle }}"><br>
+    </div>
+    <div class="mb-2">
+        <textarea name="content" class="form-control" rows="8" placeholder="Paste here..." {{ fieldsDisabled }}>{{ pasteContent }}</textarea><br>
+    </div>
+    <div class="mb-2">
+        <input type="submit" class="btn btn-primary" value="Save" {{ fieldsDisabled }}>
+    </div>
 </form>
 {% if pasteDeleteAvailable %}
 <p>
