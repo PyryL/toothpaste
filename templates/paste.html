@@ -6,9 +6,9 @@
         font-size: 1.2em;
         font-weight: 600;
     }
-    .chat-message {
+    /* .chat-message {
         border: 1px solid black;
-    }
+    } */
 </style>
 {% endblock %}
 {% block content %}
@@ -84,23 +84,27 @@
 {% if chatToken %}
 <h2>Chat</h2>
 {% for message in chatMessages %}
-<div class="chat-message">
-    <p>{{ message.content }}</p>
-    <span>{{ message.creator if message.creator else '<i>Anonymous</i>' | safe }}</span>
-    <span>{{ message.creation_date }}</span>
-    {% if chatRemoveAvailable %}
-    <br>
-    <form method="POST" action="/chat/delete/{{ message.id }}">
-        <input type="hidden" name="token" value="{{ chatToken }}">
-        <input type="submit" value="Remove">
-    </form>
-    {% endif %}
+<div class="card chat-message mb-3">
+    <div class="card-body">
+        <p class="card-text">{{ message.content }}</p>
+        <p class="card-subtitle text-body-secondary">{{ message.creator if message.creator else '<i>Anonymous</i>' | safe }}</p>
+        <p class="card-text text-body-secondary">{{ message.creation_date }}</p>
+        {% if chatRemoveAvailable %}
+        <form method="POST" action="/chat/delete/{{ message.id }}">
+            <input type="hidden" name="token" value="{{ chatToken }}">
+            <input type="submit" class="btn btn-danger" value="Remove">
+        </form>
+        {% endif %}
+    </div>
 </div>
 {% endfor %}
+<h3>Write new message</h3>
 <form method="POST" action="/chat">
     <input type="hidden" name="token" value="{{ chatToken }}">
-    <textarea name="content" rows="3" cols="30" placeholder="Message here..." minlength="1"></textarea><br>
-    <input type="submit" value="Send">
+    <div class="mb-2">
+        <textarea name="content" class="form-control" rows="3" placeholder="Message here..." minlength="1"></textarea>
+    </div>
+    <input type="submit" value="Send" class="btn btn-primary">
 </form>
 {% endif %}
 {% endblock %}
