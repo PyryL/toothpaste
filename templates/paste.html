@@ -46,26 +46,38 @@
     <div class="mb-2">
         <textarea name="content" class="form-control" rows="8" placeholder="Paste here..." {{ fieldsDisabled }}>{{ pasteContent }}</textarea><br>
     </div>
+    {% if is_modify %}
     <div class="mb-2">
         <input type="submit" class="btn btn-primary" value="Save" {{ fieldsDisabled }}>
     </div>
+    {% endif %}
 </form>
 {% if pasteDeleteAvailable %}
-<p>
-    <form method="POST" action="/paste/delete/{{ modifyToken }}">
-        <input type="submit" value="Delete paste" style="color: red">
-    </form>
-</p>
+<form method="POST" action="/paste/delete/{{ modifyToken }}" class="mb-3">
+    <input type="submit" class="btn btn-danger" value="Delete">
+</form>
 {% endif %}
 {% if votingAvailable %}
-<h2>Vote</h2>
-<p>{{ upVotes }} &#9650; / {{ downVotes }} &#9660;</p>
-<form method="POST" action="/vote/up/{{ chatToken }}">
-    <input type="submit" value="Vote up" {{ voteDisabled }}>
-</form>
-<form method="POST" action="/vote/down/{{ chatToken }}">
-    <input type="submit" value="Vote down" {{ voteDisabled }}>
-</form>
+<div class="row mb-3">
+    <div class="col-auto">
+        <form method="POST" action="/vote/up/{{ chatToken }}">
+            <!-- <input type="submit" value="Vote up" {{ voteDisabled }}> -->
+            <button type="submit" class="btn btn-info">
+                <i class="bi bi-hand-thumbs-up"></i>
+                {{ upVotes }}
+            </button>
+        </form>
+    </div>
+    <div class="col-auto">
+        <form method="POST" action="/vote/down/{{ chatToken }}">
+            <!-- <input type="submit" value="Vote down" {{ voteDisabled }}> -->
+            <button type="submit" class="btn btn-info">
+                <i class="bi bi-hand-thumbs-down"></i>
+                {{ downVotes }}
+            </button>
+        </form>
+    </div>
+</div>
 {% endif %}
 {% endblock %}
 {% block sidebar %}
