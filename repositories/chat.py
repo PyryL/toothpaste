@@ -1,12 +1,15 @@
-from app import db
 from sqlalchemy import text
+from app import db
 
 class ChatRepository:
     @classmethod
-    def add_new_message(cls, pasteId: int, content: str, logged_in_user_id: int):
-        sql = "INSERT INTO chatmessages (paste, creator, content) VALUES (:paste, :creator, :content)"
+    def add_new_message(cls, paste_id: int, content: str, logged_in_user_id: int):
+        sql = """
+            INSERT INTO chatmessages (paste, creator, content)
+            VALUES (:paste, :creator, :content)
+        """
         values = {
-            "paste": pasteId,
+            "paste": paste_id,
             "creator": logged_in_user_id,
             "content": content
         }
@@ -30,21 +33,21 @@ class ChatRepository:
         return result.fetchall()
 
     @classmethod
-    def get_paste_id_of_message(cls, messageId: int) -> int:
+    def get_paste_id_of_message(cls, message_id: int) -> int:
         sql = "SELECT paste FROM chatmessages WHERE id=:messageId"
-        result = db.session.execute(text(sql), { "messageId": messageId })
+        result = db.session.execute(text(sql), { "messageId": message_id })
         if result.rowcount != 1:
             return None
         return result.fetchone().paste
 
     @classmethod
-    def delete_message(cls, id: int):
+    def delete_message(cls, message_id: int):
         sql = "DELETE FROM chatmessages WHERE id=:id"
-        db.session.execute(text(sql), { "id": id })
+        db.session.execute(text(sql), { "id": message_id })
         db.session.commit()
 
     @classmethod
-    def delete_messages_of_paste(cls, pasteId: int):
+    def delete_messages_of_paste(cls, paste_id: int):
         sql = "DELETE FROM chatmessages WHERE paste=:pasteId"
-        db.session.execute(text(sql), { "pasteId": pasteId })
+        db.session.execute(text(sql), { "pasteId": paste_id })
         db.session.commit()

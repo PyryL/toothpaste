@@ -1,7 +1,7 @@
-from app import db
+from string import ascii_letters, digits
 from sqlalchemy import text
 from Crypto.Random.random import choice
-from string import ascii_letters, digits
+from app import db
 
 class TokenRepository:
     @classmethod
@@ -15,7 +15,7 @@ class TokenRepository:
                 return token
 
     @classmethod
-    def add_new_token(cls, pasteId: int, level: str) -> str:
+    def add_new_token(cls, paste_id: int, level: str) -> str:
         """Generates a new token and adds it to database. Returns the token."""
 
         sql = """
@@ -25,7 +25,7 @@ class TokenRepository:
         token = TokenRepository._generate_token()
         values = {
             "token": token,
-            "paste": pasteId,
+            "paste": paste_id,
             "level": level
         }
         db.session.execute(text(sql), values)
@@ -47,15 +47,15 @@ class TokenRepository:
         }
 
     @classmethod
-    def get_tokens_of_paste(cls, pasteId: int) -> list[dict]:
+    def get_tokens_of_paste(cls, paste_id: int) -> list[dict]:
         """Returns a list of all tokens related to the given paste."""
 
         sql = "SELECT token, level FROM tokens WHERE paste=:pasteId"
-        result = db.session.execute(text(sql), { "pasteId": pasteId })
+        result = db.session.execute(text(sql), { "pasteId": paste_id })
         return [{ "token": row.token, "level": row.level } for row in result.fetchall()]
 
     @classmethod
-    def delete_tokens_of_paste(cls, pasteId: int):
+    def delete_tokens_of_paste(cls, paste_id: int):
         sql = "DELETE FROM tokens WHERE paste=:pasteId"
-        db.session.execute(text(sql), { "pasteId": pasteId })
+        db.session.execute(text(sql), { "pasteId": paste_id })
         db.session.commit()

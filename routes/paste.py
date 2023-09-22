@@ -87,8 +87,7 @@ def pastePost():
             request.form["title"],
             content,
             request.form["publicity"],
-            is_encrypted,
-            logged_in_user_id
+            is_encrypted
         )
         token = request.form["modifyToken"]
     else:
