@@ -28,7 +28,7 @@ def postLogIn():
             return redirect("/log-in?status=2fa-incorrect")
 
     set_logged_in_user_id(userId)
-    return redirect("/")
+    return redirect("/?status=welcome")
 
 @app.route("/sign-up", methods=["GET"])
 def getSignUp():
@@ -50,4 +50,4 @@ def postSignUp():
     if userid is None:
         return redirect("/sign-up?status=username-exists")
     set_logged_in_user_id(userid)
-    return redirect("/")
+    return redirect("/?status=welcome")

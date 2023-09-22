@@ -140,7 +140,7 @@ def deletePaste(token: str):
     ChatRepository.delete_messages_of_paste(token_info["pasteId"])
     PasteRepository.delete_paste(token_info["pasteId"])
     
-    return redirect("/")
+    return redirect("/?status=paste-deleted")
 
 @app.route("/paste/regenerate-tokens/<string:token>", methods=["POST"])
 def regenerateTokens(token: str):

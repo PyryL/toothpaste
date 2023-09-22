@@ -1,13 +1,16 @@
 from app import app, db
-from flask import render_template
+from flask import render_template, request
 from sqlalchemy.sql import text
 from utilities.session import is_user_logged_in, get_logged_in_user_id
-from repositories import PasteRepository
+from repositories import PasteRepository, UserRepository
 
 @app.route("/")
 def index():
     logged_in_user_id = get_logged_in_user_id()
+    username = UserRepository.get_user_details(logged_in_user_id).username if is_user_logged_in() else ""
     return render_template("frontpage.html",
         isLoggedIn=is_user_logged_in(),
+        status=request.args.get("status"),
+        username=username,
         latestPastes=PasteRepository.get_latest_frontpage_pastes(logged_in_user_id),
         myPastes=PasteRepository.get_pastes_of_user(logged_in_user_id) if is_user_logged_in() else [])
