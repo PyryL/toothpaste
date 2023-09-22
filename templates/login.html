@@ -1,6 +1,19 @@
 {% extends "layout.html" %}
 {% block title %}Log in{% endblock %}
 {% block content %}
+{% if status == "incorrect" %}
+<div class="alert alert-danger" role="alert">
+    Incorrect username or password. Please try again.
+</div>
+{% elif status == "2fa-required" %}
+<div class="alert alert-danger" role="alert">
+    You should enter the 2FA code, as well. Please try again.
+</div>
+{% elif status == "2fa-incorrect" %}
+<div class="alert alert-danger" role="alert">
+    Incorrect 2FA code. Please try again.
+</div>
+{% endif %}
 <p><a href="/sign-up">No account yet? Sign up here.</a></p>
 <form action="/log-in" method="POST">
     <div class="mb-3">

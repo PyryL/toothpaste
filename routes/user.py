@@ -9,7 +9,7 @@ from utilities.validation import InputValidation
 def getLogIn():
     if is_user_logged_in():
         return redirect("/")
-    return render_template("login.html", isLoggedIn=False)
+    return render_template("login.html", isLoggedIn=False, status=request.args.get("status"))
 
 @app.route("/log-in", methods=["POST"])
 def postLogIn():
@@ -34,7 +34,7 @@ def postLogIn():
 def getSignUp():
     if is_user_logged_in():
         return redirect("/")
-    return render_template("signup.html", isLoggedIn=False)
+    return render_template("signup.html", isLoggedIn=False, status=request.args.get("status"))
 
 @app.route("/sign-up", methods=["POST"])
 def postSignUp():
@@ -43,7 +43,7 @@ def postSignUp():
     if request.form["password1"] != request.form["password2"] or \
         not InputValidation.is_valid_password(password) or \
         not InputValidation.is_valid_username(username):
-        return "username and/or password criteria not met"
+        return redirect("/sign-up?status=criteria")
 
     # add user to database
     userid = UserRepository.add_new_user(username, password)

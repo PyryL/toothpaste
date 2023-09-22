@@ -1,6 +1,15 @@
 {% extends "layout.html" %}
 {% block title %}Sign up{% endblock %}
 {% block content %}
+{% if status == "username-exists" %}
+<div class="alert alert-danger" role="alert">
+    Given username already exists. Please choose other username and try again.
+</div>
+{% elif status == "criteria" %}
+<div class="alert alert-danger" role="alert">
+    Username or password does not meet all requirements. Please try again.
+</div>
+{% endif %}
 <p><a href="/log-in">Already have an account? Log in here.</a></p>
 <form action="/sign-up" method="POST">
     <div class="mb-3">
