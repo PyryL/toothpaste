@@ -99,23 +99,17 @@ def paste_post():
         content = request.form["content"]
 
     # insert or update database
+    paste = {
+        "title": request.form["title"],
+        "content": content,
+        "publicity": request.form["publicity"],
+        "is_encrypted": is_encrypted
+    }
     if is_modify:
-        PasteRepository.update_paste(
-            token_info["pasteId"],
-            request.form["title"],
-            content,
-            request.form["publicity"],
-            is_encrypted
-        )
+        PasteRepository.update_paste(token_info["pasteId"], paste)
         token = request.form["modifyToken"]
     else:
-        paste_id = PasteRepository.add_new_paste(
-            request.form["title"],
-            content,
-            request.form["publicity"],
-            is_encrypted,
-            logged_in_user_id
-        )
+        paste_id = PasteRepository.add_new_paste(paste, logged_in_user_id)
         token = TokenRepository.add_new_token(paste_id, "modify")
         TokenRepository.add_new_token(paste_id, "view")
 

@@ -30,10 +30,9 @@ class PasteRepository:
         return (token_info, paste)
 
     @classmethod
-    def update_paste(
-        cls, paste_id: int, title: str, content: str, publicity: str, is_encrypted: bool
-    ):
-        """Updates paste data in database."""
+    def update_paste(cls, paste_id: int, paste_data: dict):
+        """Updates paste data in database.
+        Parameter paste_data should contain title, content, publicity and is_encrypted."""
 
         sql = """
             UPDATE pastes
@@ -41,20 +40,19 @@ class PasteRepository:
             WHERE id=:pasteid
         """
         values = {
-            "title": title,
-            "content": content,
-            "publicity": publicity,
-            "is_encrypted": is_encrypted,
+            "title": paste_data["title"],
+            "content": paste_data["content"],
+            "publicity": paste_data["publicity"],
+            "is_encrypted": paste_data["is_encrypted"],
             "pasteid": paste_id
         }
         db.session.execute(text(sql), values)
         db.session.commit()
 
     @classmethod
-    def add_new_paste(
-        cls, title: str, content: str, publicity: str, is_encrypted: bool, logged_in_user_id: int
-    ) -> str:
-        """Add new paste into database and return its id."""
+    def add_new_paste(cls, paste_data: dict, logged_in_user_id: int) -> str:
+        """Add new paste into database and return its id.
+        Parameter paste_data should contain title, content, publicity and is_encrypted."""
 
         # save the paste
         sql = """
@@ -63,11 +61,11 @@ class PasteRepository:
             RETURNING id
         """
         values = {
-            "title": title,
-            "content": content,
+            "title": paste_data["title"],
+            "content": paste_data["content"],
             "owner": logged_in_user_id,
-            "publicity": publicity,
-            "is_encrypted": is_encrypted
+            "publicity": paste_data["publicity"],
+            "is_encrypted": paste_data["is_encrypted"]
         }
         result = db.session.execute(text(sql), values)
         return result.fetchone().id
