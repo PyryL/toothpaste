@@ -1,5 +1,6 @@
 from sqlalchemy import text
 from app import db
+from repositories.tokens import TokenRepository
 
 class PasteRepository:
     @classmethod
@@ -14,6 +15,19 @@ class PasteRepository:
         if result.rowcount != 1:
             return None
         return result.fetchone()
+
+    @classmethod
+    def get_paste_by_token(cls, token: str) -> tuple:
+        """Convenience method that combines getting data about token and paste.
+        Returns a tuple (token_info, paste_info), or (None, None) if not found."""
+
+        token_info = TokenRepository.get_token_data(token)
+        if token_info is None:
+            return None
+        paste = PasteRepository.get_paste(token_info["pasteId"])
+        if paste is None:
+            return None
+        return (token_info, paste)
 
     @classmethod
     def update_paste(

@@ -1,5 +1,5 @@
-from app import app
 from flask import render_template, redirect, request
+from app import app
 from repositories.users import UserRepository
 from utilities.session import is_user_logged_in, get_logged_in_user_id
 from utilities.two_factor_auth import TwoFactorAuthentication
@@ -24,7 +24,7 @@ def settings():
     )
 
 @app.route("/settings/setup-2fa", methods=["POST"])
-def setup2FA():
+def setup_2fa():
     if not is_user_logged_in():
         return "401 not logged in"
 
