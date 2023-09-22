@@ -2,8 +2,8 @@
 {% block title %}Encryption key{% endblock %}
 {% block content %}
 {% if is_incorrect %}
-<div style="color:red">
-    Incorrect key, please try again.
+<div class="alert alert-danger" role="alert">
+    Given key was incorrect. Please try again.
 </div>
 {% endif %}
 <p>
@@ -11,8 +11,10 @@
     Please enter decryption key below to view the paste.
 </p>
 <form action="/paste/{{ token }}" method="POST">
-    <label for="key">Key:</label>
-    <input type="text" name="decryption-key" id="key"><br>
-    <input type="submit" value="Next">
+    <div class="mb-3">
+        <label for="key">Key:</label>
+        <input type="text" name="decryption-key" id="key" class="form-control">
+    </div>
+    <input type="submit" value="Next" class="btn btn-primary">
 </form>
 {% endblock %}
