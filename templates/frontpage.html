@@ -5,6 +5,10 @@
 <div class="alert alert-success" role="alert">Paste deleted.</div>
 {% elif status == "welcome" %}
 <div class="alert alert-info" role="alert">Welcome, <b>{{ username }}</b>!</div>
+{% elif status == "logged-out" %}
+<div class="alert alert-success" role="alert">
+    Successfully logged out. Please clear your browser cache to prevent other users of this computer from seeing pastes.
+</div>
 {% endif %}
 <h2>Latest pastes</h2>
 <ul>

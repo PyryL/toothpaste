@@ -1,7 +1,7 @@
 from app import app
 from flask import render_template, redirect, request, session
 from repositories import UserRepository
-from utilities.session import set_logged_in_user_id, is_user_logged_in
+from utilities.session import set_logged_in_user_id, is_user_logged_in, delete_session_user_id
 from utilities.two_factor_auth import TwoFactorAuthentication
 from utilities.validation import InputValidation
 
@@ -51,3 +51,8 @@ def postSignUp():
         return redirect("/sign-up?status=username-exists")
     set_logged_in_user_id(userid)
     return redirect("/?status=welcome")
+
+@app.route("/log-out")
+def logOut():
+    delete_session_user_id()
+    return redirect("/?status=logged-out")
