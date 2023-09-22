@@ -12,7 +12,7 @@
 {% endif %}
 <h2>Latest pastes</h2>
 <ul>
-    {% for paste in latestPastes %}
+    {% for paste in latest_pastes %}
     <li>
         <a href="/paste/{{ paste.token }}">{{ paste.title }}</a>
     </li>
@@ -21,7 +21,7 @@
 {% if isLoggedIn %}
 <h2>My pastes</h2>
 <ul>
-    {% for paste in myPastes %}
+    {% for paste in my_pastes %}
     <li>
         <a href="/paste/{{ paste.token }}">{{ paste.title }}</a>
     </li>

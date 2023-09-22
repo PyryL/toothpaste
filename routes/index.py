@@ -17,5 +17,5 @@ def index():
         isLoggedIn=is_user_logged_in(),
         status=request.args.get("status"),
         username=username,
-        latestPastes=PasteRepository.get_latest_frontpage_pastes(logged_in_user_id),
-        myPastes=my_pastes)
+        latest_pastes=PasteRepository.get_latest_frontpage_pastes(logged_in_user_id),
+        my_pastes=my_pastes)

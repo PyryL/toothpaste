@@ -18,9 +18,9 @@ def settings():
         isLoggedIn=True,
         status=request.args.get("status"),
         username=user_details.username,
-        has2FAEnabled=user_details.has_2fa_enabled,
-        TwoFAUri="" if user_details.has_2fa_enabled else totp["provisioning_uri"],
-        totpSecret="" if user_details.has_2fa_enabled else totp["secret"]
+        has_2fa_enabled=user_details.has_2fa_enabled,
+        twofa_uri="" if user_details.has_2fa_enabled else totp["provisioning_uri"],
+        totp_secret="" if user_details.has_2fa_enabled else totp["secret"]
     )
 
 @app.route("/settings/setup-2fa", methods=["POST"])

@@ -18,62 +18,62 @@
     <input id="share-view" value="{{ share_view_token }}" disabled><br>
     <label for="share-modify">Modify:</label>
     <input id="share-modify" value="{{ share_modify_token }}" disabled>
-    <form method="POST" action="/paste/regenerate-tokens/{{ modifyToken }}">
+    <form method="POST" action="/paste/regenerate-tokens/{{ modify_token }}">
         <input type="submit" value="Regenerate tokens">
     </form>
 </p>
 {% endif %}
 <form method="POST" action="/paste">
-    <input type="hidden" name="modifyToken" value="{{ modifyToken }}">
+    <input type="hidden" name="modifyToken" value="{{ modify_token }}">
     {% if is_modify %}
     <div class="mb-3">
         <label for="publicity">Publicity:</label>
-        <select name="publicity" id="publicity" class="form-control" {{ fieldsDisabled }}>
-            <option value="listed" {{ 'selected' if pastePublicity == 'listed' else '' }}>Listed on the front page</option>
-            <option value="unlisted" {{ 'selected' if pastePublicity == 'unlisted' else '' }}>Anyone with link</option>
-            <option value="private" {{ 'selected' if pastePublicity == 'private' else '' }}>Only for you</option>
+        <select name="publicity" id="publicity" class="form-control" {{ fields_disabled }}>
+            <option value="listed" {{ 'selected' if paste_publicity == 'listed' else '' }}>Listed on the front page</option>
+            <option value="unlisted" {{ 'selected' if paste_publicity == 'unlisted' else '' }}>Anyone with link</option>
+            <option value="private" {{ 'selected' if paste_publicity == 'private' else '' }}>Only for you</option>
         </select>
     </div>
     <div class="mb-3">
         <label for="encryption-key">Encryption key:</label>
-        <input type="password" id="encryption-key" name="encryption-key" class="form-control" placeholder="(optional)" value="{{ encryption_key }}" aria-describedby="encryption-help" {{ fieldsDisabled }}>
+        <input type="password" id="encryption-key" name="encryption-key" class="form-control" placeholder="(optional)" value="{{ encryption_key }}" aria-describedby="encryption-help" {{ fields_disabled }}>
         <span id="encryption-help" class="form-text">If encryption key is provided, everyone is required to enter it before viewing this paste. It can not be restored if you forget it.</span>
     </div>
     {% endif %}
     <div class="mb-2">
-        <input type="text" name="title" id="title" class="form-control" placeholder="Paste title" minlength="1" {{ fieldsDisabled }} value="{{ pasteTitle }}"><br>
+        <input type="text" name="title" id="title" class="form-control" placeholder="Paste title" minlength="1" {{ fields_disabled }} value="{{ paste_title }}"><br>
     </div>
     <div class="mb-2">
-        <textarea name="content" class="form-control" rows="8" placeholder="Paste here..." {{ fieldsDisabled }}>{{ pasteContent }}</textarea><br>
+        <textarea name="content" class="form-control" rows="8" placeholder="Paste here..." {{ fields_disabled }}>{{ paste_content }}</textarea><br>
     </div>
     {% if is_modify %}
     <div class="mb-2">
-        <input type="submit" class="btn btn-primary" value="Save" {{ fieldsDisabled }}>
+        <input type="submit" class="btn btn-primary" value="Save" {{ fields_disabled }}>
     </div>
     {% endif %}
 </form>
-{% if pasteDeleteAvailable %}
-<form method="POST" action="/paste/delete/{{ modifyToken }}" class="mb-3">
+{% if paste_delete_available %}
+<form method="POST" action="/paste/delete/{{ modify_token }}" class="mb-3">
     <input type="submit" class="btn btn-danger" value="Delete">
 </form>
 {% endif %}
-{% if votingAvailable %}
+{% if voting_available %}
 <div class="row mb-3">
     <div class="col-auto">
-        <form method="POST" action="/vote/up/{{ chatToken }}">
+        <form method="POST" action="/vote/up/{{ chat_token }}">
             <!-- <input type="submit" value="Vote up" {{ voteDisabled }}> -->
             <button type="submit" class="btn btn-info">
                 <i class="bi bi-hand-thumbs-up"></i>
-                {{ upVotes }}
+                {{ up_votes }}
             </button>
         </form>
     </div>
     <div class="col-auto">
-        <form method="POST" action="/vote/down/{{ chatToken }}">
+        <form method="POST" action="/vote/down/{{ chat_token }}">
             <!-- <input type="submit" value="Vote down" {{ voteDisabled }}> -->
             <button type="submit" class="btn btn-info">
                 <i class="bi bi-hand-thumbs-down"></i>
-                {{ downVotes }}
+                {{ down_votes }}
             </button>
         </form>
     </div>
@@ -81,17 +81,17 @@
 {% endif %}
 {% endblock %}
 {% block sidebar %}
-{% if chatToken %}
+{% if chat_token %}
 <h2>Chat</h2>
-{% for message in chatMessages %}
+{% for message in chat_messages %}
 <div class="card chat-message mb-3">
     <div class="card-body">
         <p class="card-text">{{ message.content }}</p>
         <p class="card-subtitle text-body-secondary">{{ message.creator if message.creator else '<i>Anonymous</i>' | safe }}</p>
         <p class="card-text text-body-secondary">{{ message.creation_date }}</p>
-        {% if chatRemoveAvailable %}
+        {% if chat_remove_available %}
         <form method="POST" action="/chat/delete/{{ message.id }}">
-            <input type="hidden" name="token" value="{{ chatToken }}">
+            <input type="hidden" name="token" value="{{ chat_token }}">
             <input type="submit" class="btn btn-danger" value="Remove">
         </form>
         {% endif %}
@@ -100,7 +100,7 @@
 {% endfor %}
 <h3>Write new message</h3>
 <form method="POST" action="/chat">
-    <input type="hidden" name="token" value="{{ chatToken }}">
+    <input type="hidden" name="token" value="{{ chat_token }}">
     <div class="mb-2">
         <textarea name="content" class="form-control" rows="3" placeholder="Message here..." minlength="1"></textarea>
     </div>

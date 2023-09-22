@@ -56,19 +56,19 @@ def read_paste(token: str):
         is_modify=has_edit_permissions,
         share_view_token=view_token if has_edit_permissions else "",
         share_modify_token=modify_token if has_edit_permissions else "",
-        modifyToken=token if has_edit_permissions else "",
-        fieldsDisabled="" if has_edit_permissions else "disabled",
-        pastePublicity=paste.publicity,
+        modify_token=token if has_edit_permissions else "",
+        fields_disabled="" if has_edit_permissions else "disabled",
+        paste_publicity=paste.publicity,
         encryption_key=request.form["decryption-key"] if paste.is_encrypted else "",
-        pasteTitle=paste.title,
-        pasteContent=content,
-        pasteDeleteAvailable=has_delete_permission,
-        votingAvailable=True,
-        upVotes=votes["upvotes"],
-        downVotes=votes["downvotes"],
-        chatToken=token,
-        chatMessages=ChatRepository.get_messages_of_paste(token),
-        chatRemoveAvailable=can_delete_chat_messages)
+        paste_title=paste.title,
+        paste_content=content,
+        paste_delete_available=has_delete_permission,
+        voting_available=True,
+        up_votes=votes["upvotes"],
+        down_votes=votes["downvotes"],
+        chat_token=token,
+        chat_messages=ChatRepository.get_messages_of_paste(token),
+        chat_remove_available=can_delete_chat_messages)
 
 @app.route("/paste", methods=["POST"])
 def paste_post():
@@ -121,9 +121,9 @@ def new_paste():
         isLoggedIn=is_user_logged_in(),
         header="New paste",
         is_modify=True,
-        fieldsDisabled="",
-        pasteTitle="",
-        pasteContent="",)
+        fields_disabled="",
+        paste_title="",
+        paste_content="",)
 
 @app.route("/ask-key/<string:token>")
 def ask_key(token: str):

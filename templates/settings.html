@@ -19,7 +19,7 @@
     <b>Username:</b> {{ username }}
 </p>
 <h2>Two-factor authentication</h2>
-{% if has2FAEnabled %}
+{% if has_2fa_enabled %}
 <p>
     <span class="badge rounded-pill text-bg-success"><i class="bi bi-shield-check"></i></span>
     2FA is already enabled.
@@ -42,7 +42,7 @@
         <li>From now on, every time you log in to ToothPaste, you are asked the code for extra security.</li>
     </ol>
 </p>
-<img src="{{ qrcode(TwoFAUri) }}" alt="QR code" width="180" height="180" class="img-thumbnail">
+<img src="{{ qrcode(twofa_uri) }}" alt="QR code" width="180" height="180" class="img-thumbnail">
 <p>
     <div class="collapse" id="twofa-manual-info">
         <table>
@@ -60,7 +60,7 @@
             </tr>
             <tr>
                 <td>Base32 secret</td>
-                <td><span class="code">{{ totpSecret }}</span></td>
+                <td><span class="code">{{ totp_secret }}</span></td>
             </tr>
         </table>
     </div>
