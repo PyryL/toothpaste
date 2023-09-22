@@ -1,21 +1,34 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <title>Log in &ndash; ToothPaste</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta charset="utf-8">
-    </head>
-    <body>
-        <h1>Log in</h1>
-        <p><a href="/sign-up">No account yet? Sign up here.</a></p>
-        <form action="/log-in" method="POST">
-            <label for="username">Username:</label>
-            <input type="text" name="username" id="username"><br>
-            <label for="password">Password:</label>
-            <input type="password" name="password" id="password"><br>
-            <label for="totp-code">2FA code:</label>
-            <input type="text" name="totp-code" id="totp-code" placeholder="Optional"><br>
-            <input type="submit" value="Log in">
-        </form>
-    </body>
-</html>
+{% extends "layout.html" %}
+{% block title %}Log in{% endblock %}
+{% block content %}
+{% if status == "incorrect" %}
+<div class="alert alert-danger" role="alert">
+    Incorrect username or password. Please try again.
+</div>
+{% elif status == "2fa-required" %}
+<div class="alert alert-danger" role="alert">
+    You should enter the 2FA code, as well. Please try again.
+</div>
+{% elif status == "2fa-incorrect" %}
+<div class="alert alert-danger" role="alert">
+    Incorrect 2FA code. Please try again.
+</div>
+{% endif %}
+<p><a href="/sign-up">No account yet? Sign up here.</a></p>
+<form action="/log-in" method="POST">
+    <div class="mb-3">
+        <label for="username">Username:</label>
+        <input type="text" name="username" id="username" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label for="password">Password:</label>
+        <input type="password" name="password" id="password" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label for="totp-code">2FA code:</label>
+        <input type="text" name="totp-code" id="totp-code" class="form-control" placeholder="Optional">
+        <span class="form-text">If you have set up two-factor authentication in settings, please provide the six-digit code here.</span>
+    </div>
+    <input type="submit" value="Log in" class="btn btn-primary">
+</form>
+{% endblock %}

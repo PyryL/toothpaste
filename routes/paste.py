@@ -2,7 +2,7 @@ from app import app, db
 from flask import render_template, redirect, request
 from sqlalchemy import text
 from repositories import PasteRepository, ChatRepository, VoteRepository, TokenRepository
-from utilities.session import get_logged_in_user_id
+from utilities.session import is_user_logged_in, get_logged_in_user_id
 from utilities.encryption import Encryption
 from utilities.permissions import Permissions
 
@@ -39,7 +39,9 @@ def readPaste(token):
     modify_token = next((t["token"] for t in tokens if t["level"] == "modify"), None)
 
     return render_template("paste.html",
+        isLoggedIn=is_user_logged_in(),
         header="Read paste",
+        is_modify=has_edit_permissions,
         share_view_token=view_token if has_edit_permissions else "",
         share_modify_token=modify_token if has_edit_permissions else "",
         modifyToken=token if has_edit_permissions else "",
@@ -105,7 +107,9 @@ def pastePost():
 @app.route("/new-paste")
 def newPaste():
     return render_template("paste.html",
+        isLoggedIn=is_user_logged_in(),
         header="New paste",
+        is_modify=True,
         fieldsDisabled="",
         pasteTitle="",
         pasteContent="",)
@@ -114,6 +118,7 @@ def newPaste():
 def askKey(token: str):
     is_incorrect = "status" in request.args and request.args["status"] == "incorrect"
     return render_template("ask-key.html",
+        isLoggedIn=is_user_logged_in(),
         token=token,
         is_incorrect=is_incorrect)
 
@@ -135,7 +140,7 @@ def deletePaste(token: str):
     ChatRepository.delete_messages_of_paste(token_info["pasteId"])
     PasteRepository.delete_paste(token_info["pasteId"])
     
-    return redirect("/")
+    return redirect("/?status=paste-deleted")
 
 @app.route("/paste/regenerate-tokens/<string:token>", methods=["POST"])
 def regenerateTokens(token: str):

@@ -1,19 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <title>ToothPaste</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta charset="utf-8">
-    </head>
-    <body>
-        <h1>ToothPaste</h1>
-        <a href="/new-paste">+ Create new paste</a>
-        <ul>
-            {% for paste in pastes %}
-            <li>
-                <a href="/paste/{{ paste.token }}">{{ paste.title }}</a>
-            </li>
-            {% endfor %}
-        </ul>
-    </body>
-</html>
+{% extends "layout.html" %}
+{% block title %}Front page{% endblock %}
+{% block content %}
+{% if status == "paste-deleted" %}
+<div class="alert alert-success" role="alert">Paste deleted.</div>
+{% elif status == "welcome" %}
+<div class="alert alert-info" role="alert">Welcome, <b>{{ username }}</b>!</div>
+{% elif status == "logged-out" %}
+<div class="alert alert-success" role="alert">
+    Successfully logged out. Please clear your browser cache to prevent other users of this computer from seeing pastes.
+</div>
+{% endif %}
+<h2>Latest pastes</h2>
+<ul>
+    {% for paste in latestPastes %}
+    <li>
+        <a href="/paste/{{ paste.token }}">{{ paste.title }}</a>
+    </li>
+    {% endfor %}
+</ul>
+{% if isLoggedIn %}
+<h2>My pastes</h2>
+<ul>
+    {% for paste in myPastes %}
+    <li>
+        <a href="/paste/{{ paste.token }}">{{ paste.title }}</a>
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endblock %}

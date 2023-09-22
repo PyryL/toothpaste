@@ -59,3 +59,28 @@ class PasteRepository:
         sql = "DELETE FROM pastes WHERE id=:pasteId"
         db.session.execute(text(sql), { "pasteId": pasteId })
         db.session.commit()
+
+    @classmethod
+    def get_latest_frontpage_pastes(cls, excludeOwner: int):
+        """Returns database result of ten latest pastes whose owner is not the given user."""
+        sql = """
+            SELECT p.title AS title, t.token AS token
+            FROM pastes AS p, tokens AS t
+            WHERE t.paste=p.id AND t.level='view' AND p.publicity='listed' AND
+                p.is_encrypted=FALSE AND (p.owner IS NULL OR p.owner != :excludeOwner)
+            ORDER BY modification_date DESC
+            LIMIT 10
+        """
+        result = db.session.execute(text(sql), { "excludeOwner": -1 if excludeOwner is None else excludeOwner })
+        return result.fetchall()
+
+    @classmethod
+    def get_pastes_of_user(cls, userId: int):
+        """Returns database result containing title and modify-level token of all pastes owned by given user."""
+        sql = """
+            SELECT p.title AS title, t.token AS token
+            FROM pastes AS p, tokens AS t
+            WHERE t.paste=p.id AND t.level='modify' AND p.owner=:owner
+            ORDER BY modification_date DESC
+        """
+        return db.session.execute(text(sql), { "owner": userId }).fetchall()

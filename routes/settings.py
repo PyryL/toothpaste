@@ -15,6 +15,8 @@ def settings():
         totp = TwoFactorAuthentication.generate_new(user_details.username)
 
     return render_template("settings.html",
+        isLoggedIn=True,
+        status=request.args.get("status"),
         username=user_details.username,
         has2FAEnabled=user_details.has_2fa_enabled,
         TwoFAUri="" if user_details.has_2fa_enabled else totp["provisioning_uri"],

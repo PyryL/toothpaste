@@ -1,21 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <title>Sign up &ndash; ToothPaste</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta charset="utf-8">
-    </head>
-    <body>
-        <h1>Sign up</h1>
-        <p><a href="/log-in">Already have an account? Log in here.</a></p>
-        <form action="/sign-up" method="POST">
-            <label for="username">Username:</label>
-            <input type="text" name="username" id="username"><br>
-            <label for="password1">Password:</label>
-            <input type="password" name="password1" id="password1"><br>
-            <label for="password2">Confirm password:</label>
-            <input type="password" name="password2" id="password2"><br>
-            <input type="submit" value="Sign up">
-        </form>
-    </body>
-</html>
+{% extends "layout.html" %}
+{% block title %}Sign up{% endblock %}
+{% block content %}
+{% if status == "username-exists" %}
+<div class="alert alert-danger" role="alert">
+    Given username already exists. Please choose other username and try again.
+</div>
+{% elif status == "criteria" %}
+<div class="alert alert-danger" role="alert">
+    Username or password does not meet all requirements. Please try again.
+</div>
+{% endif %}
+<p><a href="/log-in">Already have an account? Log in here.</a></p>
+<form action="/sign-up" method="POST">
+    <div class="mb-3">
+        <label for="username">Username:</label>
+        <input type="text" name="username" id="username" class="form-control" pattern="[a-zA-Z0-9_]{3,12}">
+        <span class="form-text">Username must be 3-12 characters long and only contain lower and upper case characters A-Z, digits and underscore.</span>
+    </div>
+    <div class="mb-3">
+        <label for="password1">Password:</label>
+        <input type="password" name="password1" id="password1" class="form-control" minlength="8" maxlength="72" pattern=".*[^a-zA-Z0-9].*">
+        <span class="form-text">Password must be 8-72 characters long and it must contain at least one lower and upper case character A-Z, digit and special character.</span>
+    </div>
+    <div class="mb-3">
+        <label for="password2">Confirm password:</label>
+        <input type="password" name="password2" id="password2" class="form-control" minlength="8" maxlength="72">
+    </div>
+    <input type="submit" value="Sign up" class="btn btn-primary">
+</form>
+{% endblock %}
