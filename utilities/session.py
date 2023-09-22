@@ -1,7 +1,7 @@
 from flask import session
 
-def set_logged_in_user_id(id: int):
-    session["userid"] = id
+def set_logged_in_user_id(user_id: int):
+    session["userid"] = user_id
 
 def delete_session_user_id():
     if "userid" in session:

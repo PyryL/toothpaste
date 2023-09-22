@@ -17,6 +17,6 @@ class TwoFactorAuthentication:
         }
 
     @classmethod
-    def validate_2FA_code(cls, totp_secret: str, code: str) -> bool:
+    def validate_2fa_code(cls, totp_secret: str, code: str) -> bool:
         totp = pyotp.TOTP(totp_secret)
         return totp.verify(code)

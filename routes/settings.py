@@ -31,7 +31,7 @@ def setup_2fa():
     totp_secret, verification_code = request.form["totp-secret"], request.form["totp-code"]
 
     # check that user gave valid 2FA code
-    if not TwoFactorAuthentication.validate_2FA_code(totp_secret, verification_code):
+    if not TwoFactorAuthentication.validate_2fa_code(totp_secret, verification_code):
         return redirect("/settings?status=invalid-2fa-code")
 
     # save secret to database

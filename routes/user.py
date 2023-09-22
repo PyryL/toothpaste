@@ -25,7 +25,7 @@ def post_log_in():
     if user_details.has_2fa_enabled:
         totp_code = request.form["totp-code"]
         totp_secret = user_details.totpsecret
-        if not TwoFactorAuthentication.validate_2FA_code(totp_secret, totp_code):
+        if not TwoFactorAuthentication.validate_2fa_code(totp_secret, totp_code):
             return redirect("/log-in?status=2fa-incorrect")
 
     set_logged_in_user_id(user_id)
