@@ -51,7 +51,7 @@ def read_paste(token: str):
     modify_token = next((t["token"] for t in tokens if t["level"] == "modify"), None)
 
     return render_template("paste.html",
-        isLoggedIn=is_user_logged_in(),
+        is_logged_in=is_user_logged_in(),
         header="Read paste",
         is_modify=has_edit_permissions,
         share_view_token=view_token if has_edit_permissions else "",
@@ -118,7 +118,7 @@ def paste_post():
 @app.route("/new-paste")
 def new_paste():
     return render_template("paste.html",
-        isLoggedIn=is_user_logged_in(),
+        is_logged_in=is_user_logged_in(),
         header="New paste",
         is_modify=True,
         fields_disabled="",
@@ -129,7 +129,7 @@ def new_paste():
 def ask_key(token: str):
     is_incorrect = "status" in request.args and request.args["status"] == "incorrect"
     return render_template("ask-key.html",
-        isLoggedIn=is_user_logged_in(),
+        is_logged_in=is_user_logged_in(),
         token=token,
         is_incorrect=is_incorrect)
 

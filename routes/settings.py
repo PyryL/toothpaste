@@ -15,7 +15,7 @@ def settings():
         totp = TwoFactorAuthentication.generate_new(user_details.username)
 
     return render_template("settings.html",
-        isLoggedIn=True,
+        is_logged_in=True,
         status=request.args.get("status"),
         username=user_details.username,
         has_2fa_enabled=user_details.has_2fa_enabled,

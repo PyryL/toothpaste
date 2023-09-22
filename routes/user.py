@@ -9,7 +9,7 @@ from utilities.validation import InputValidation
 def get_log_in():
     if is_user_logged_in():
         return redirect("/")
-    return render_template("login.html", isLoggedIn=False, status=request.args.get("status"))
+    return render_template("login.html", is_logged_in=False, status=request.args.get("status"))
 
 @app.route("/log-in", methods=["POST"])
 def post_log_in():
@@ -35,7 +35,7 @@ def post_log_in():
 def get_sign_up():
     if is_user_logged_in():
         return redirect("/")
-    return render_template("signup.html", isLoggedIn=False, status=request.args.get("status"))
+    return render_template("signup.html", is_logged_in=False, status=request.args.get("status"))
 
 @app.route("/sign-up", methods=["POST"])
 def post_sign_up():

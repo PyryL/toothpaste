@@ -14,7 +14,7 @@ def index():
         my_pastes = []
 
     return render_template("frontpage.html",
-        isLoggedIn=is_user_logged_in(),
+        is_logged_in=is_user_logged_in(),
         status=request.args.get("status"),
         username=username,
         latest_pastes=PasteRepository.get_latest_frontpage_pastes(logged_in_user_id),
