@@ -1,5 +1,9 @@
 [MESSAGES CONTROL]
 
+# import-error is disabled due to false warnings
+# more info: https://stackoverflow.com/a/62085623
+
 disable=missing-module-docstring,
         missing-function-docstring,
-        missing-class-docstring
+        missing-class-docstring,
+        import-error
