@@ -10,6 +10,11 @@
 </style>
 {% endblock %}
 {% block content %}
+{% if status == "invalid-2fa-code" %}
+<div class="alert alert-danger" role="alert">
+    Given 2FA code was invalid. Please try again.
+</div>
+{% endif %}
 <p>
     <b>Username:</b> {{ username }}
 </p>
