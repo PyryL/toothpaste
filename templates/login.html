@@ -3,12 +3,19 @@
 {% block content %}
 <p><a href="/sign-up">No account yet? Sign up here.</a></p>
 <form action="/log-in" method="POST">
-    <label for="username">Username:</label>
-    <input type="text" name="username" id="username"><br>
-    <label for="password">Password:</label>
-    <input type="password" name="password" id="password"><br>
-    <label for="totp-code">2FA code:</label>
-    <input type="text" name="totp-code" id="totp-code" placeholder="Optional"><br>
-    <input type="submit" value="Log in">
+    <div class="mb-3">
+        <label for="username">Username:</label>
+        <input type="text" name="username" id="username" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label for="password">Password:</label>
+        <input type="password" name="password" id="password" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label for="totp-code">2FA code:</label>
+        <input type="text" name="totp-code" id="totp-code" class="form-control" placeholder="Optional">
+        <span class="form-text">If you have set up two-factor authentication in settings, please provide the six-digit code here.</span>
+    </div>
+    <input type="submit" value="Log in" class="btn btn-primary">
 </form>
 {% endblock %}
