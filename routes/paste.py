@@ -46,7 +46,7 @@ def read_paste(token: str):
         content = paste.content
 
     votes = VoteRepository.get_votes_of_paste(token)
-    tokens = TokenRepository.get_tokens_of_paste(token_info["pasteId"])
+    tokens = TokenRepository.get_tokens_of_paste(token_info["paste_id"])
     view_token = next((t["token"] for t in tokens if t["level"] == "view"), None)
     modify_token = next((t["token"] for t in tokens if t["level"] == "modify"), None)
 
@@ -149,10 +149,10 @@ def delete_paste(token: str):
     if not Permissions.can_delete_paste(token_info["level"], paste.owner, logged_in_user_id):
         return "403 forbidden"
 
-    TokenRepository.delete_tokens_of_paste(token_info["pasteId"])
-    VoteRepository.delete_votes_of_paste(token_info["pasteId"])
-    ChatRepository.delete_messages_of_paste(token_info["pasteId"])
-    PasteRepository.delete_paste(token_info["pasteId"])
+    TokenRepository.delete_tokens_of_paste(token_info["paste_id"])
+    VoteRepository.delete_votes_of_paste(token_info["paste_id"])
+    ChatRepository.delete_messages_of_paste(token_info["paste_id"])
+    PasteRepository.delete_paste(token_info["paste_id"])
 
     return redirect("/?status=paste-deleted")
 
@@ -173,8 +173,8 @@ def regenerate_tokens(token: str):
         return "403 forbidden"
 
     # delete existing and generate new
-    TokenRepository.delete_tokens_of_paste(token_info["pasteId"])
-    modify_level_token = TokenRepository.add_new_token(token_info["pasteId"], "modify")
-    TokenRepository.add_new_token(token_info["pasteId"], "view")
+    TokenRepository.delete_tokens_of_paste(token_info["paste_id"])
+    modify_level_token = TokenRepository.add_new_token(token_info["paste_id"], "modify")
+    TokenRepository.add_new_token(token_info["paste_id"], "view")
 
     return redirect(f"/paste/{modify_level_token}")

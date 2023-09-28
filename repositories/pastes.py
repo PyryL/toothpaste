@@ -24,7 +24,7 @@ class PasteRepository:
         token_info = TokenRepository.get_token_data(token)
         if token_info is None:
             return None
-        paste = PasteRepository.get_paste(token_info["pasteId"])
+        paste = PasteRepository.get_paste(token_info["paste_id"])
         if paste is None:
             return None
         return (token_info, paste)

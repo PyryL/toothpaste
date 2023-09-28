@@ -11,7 +11,7 @@ def new_chat_message():
         return "404 paste not found"
 
     ChatRepository.add_new_message(
-        token_info["pasteId"],
+        token_info["paste_id"],
         request.form["content"],
         get_logged_in_user_id()
     )
@@ -25,14 +25,14 @@ def delete_message(message_id: int):
     token_info = TokenRepository.get_token_data(token)
     if token_info is None:
         return "404 paste not found"
-    paste = PasteRepository.get_paste(token_info["pasteId"])
+    paste = PasteRepository.get_paste(token_info["paste_id"])
     if paste is None:
         return "404 paste not found"
 
     if not Permissions.can_delete_chat_message(token_info["level"], paste.owner, logged_in_user_id):
         return "403 forbidden"
     # make sure that token is related to the same paste with chat message
-    if ChatRepository.get_paste_id_of_message(message_id) != token_info["pasteId"]:
+    if ChatRepository.get_paste_id_of_message(message_id) != token_info["paste_id"]:
         return "400 bad request"
 
     ChatRepository.delete_message(message_id)

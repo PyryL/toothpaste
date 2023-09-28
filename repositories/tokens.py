@@ -42,7 +42,7 @@ class TokenRepository:
             return None
         token_info = result.fetchone()
         return {
-            "pasteId": token_info.paste,
+            "paste_id": token_info.paste,
             "level": token_info.level
         }
 
