@@ -1,6 +1,9 @@
+# import order is determined by Flask, so silencing the warning is ok
+# pylint: disable=unused-import, wrong-import-position
+
+from os import getenv
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from os import getenv
 
 app = Flask(__name__)
 app.secret_key = getenv("SESSION_SECRET_KEY")

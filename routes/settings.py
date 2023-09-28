@@ -1,5 +1,5 @@
-from app import app
 from flask import render_template, redirect, request
+from app import app
 from repositories.users import UserRepository
 from utilities.session import is_user_logged_in, get_logged_in_user_id
 from utilities.two_factor_auth import TwoFactorAuthentication
@@ -15,23 +15,23 @@ def settings():
         totp = TwoFactorAuthentication.generate_new(user_details.username)
 
     return render_template("settings.html",
-        isLoggedIn=True,
+        is_logged_in=True,
         status=request.args.get("status"),
         username=user_details.username,
-        has2FAEnabled=user_details.has_2fa_enabled,
-        TwoFAUri="" if user_details.has_2fa_enabled else totp["provisioning_uri"],
-        totpSecret="" if user_details.has_2fa_enabled else totp["secret"]
+        has_2fa_enabled=user_details.has_2fa_enabled,
+        twofa_uri="" if user_details.has_2fa_enabled else totp["provisioning_uri"],
+        totp_secret="" if user_details.has_2fa_enabled else totp["secret"]
     )
 
 @app.route("/settings/setup-2fa", methods=["POST"])
-def setup2FA():
+def setup_2fa():
     if not is_user_logged_in():
         return "401 not logged in"
 
     totp_secret, verification_code = request.form["totp-secret"], request.form["totp-code"]
 
     # check that user gave valid 2FA code
-    if not TwoFactorAuthentication.validate_2FA_code(totp_secret, verification_code):
+    if not TwoFactorAuthentication.validate_2fa_code(totp_secret, verification_code):
         return redirect("/settings?status=invalid-2fa-code")
 
     # save secret to database

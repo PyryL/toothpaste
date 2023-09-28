@@ -1,0 +1,13 @@
+[MESSAGES CONTROL]
+
+# import-error is disabled due to false warnings
+# more info: https://stackoverflow.com/a/62085623
+
+# cyclic-import is disabled because `app` must be imported
+# in routes that are then imported in app.py
+
+disable=missing-module-docstring,
+        missing-function-docstring,
+        missing-class-docstring,
+        import-error,
+        cyclic-import,

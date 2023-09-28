@@ -1,5 +1,5 @@
-from app import db
 from sqlalchemy import text
+from app import db
 
 class UserRepository:
     @classmethod
@@ -49,18 +49,18 @@ class UserRepository:
         return result.fetchone().id
 
     @classmethod
-    def get_user_details(cls, userId: int):
+    def get_user_details(cls, user_id: int):
         sql = """
             SELECT username, totpSecret, totpSecret IS NOT NULL AS has_2fa_enabled
             FROM users WHERE id=:id
         """
-        result = db.session.execute(text(sql), { "id": userId })
+        result = db.session.execute(text(sql), { "id": user_id })
         if result.rowcount != 1:
             return None
         return result.fetchone()
 
     @classmethod
-    def add_2fa_secret_to_user(cls, userId: int, secret: str):
+    def add_2fa_secret_to_user(cls, user_id: int, secret: str):
         sql = "UPDATE users SET totpSecret=:secret WHERE id=:id"
-        db.session.execute(text(sql), { "secret": secret, "id": userId })
+        db.session.execute(text(sql), { "secret": secret, "id": user_id })
         db.session.commit()

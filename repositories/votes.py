@@ -1,5 +1,5 @@
-from app import db
 from sqlalchemy import text
+from app import db
 
 class VoteRepository:
     @classmethod
@@ -51,7 +51,7 @@ class VoteRepository:
             db.session.commit()
 
     @classmethod
-    def delete_votes_of_paste(cls, pasteId: int):
+    def delete_votes_of_paste(cls, paste_id: int):
         sql = "DELETE FROM votes WHERE paste=:pasteId"
-        db.session.execute(text(sql), { "pasteId": pasteId })
+        db.session.execute(text(sql), { "pasteId": paste_id })
         db.session.commit()
