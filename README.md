@@ -12,15 +12,67 @@ Original owner of a paste can grant edit permissions to other users, as well. An
 
 ## Installation
 
-### `.env`
+### Setup
+
+Start by cloning project repository to your computer and moving to its root directory:
+
+```
+git clone https://github.com/PyryL/toothpaste.git
+cd toothpaste
+```
+
+Next, setup and activate Python environment and install dependencies:
+
+```
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+**Note:** If `python` or `pip` commands don't work, try `python3` and `pip3` instead.
+
+**Note:** You can exit activated virtual environment with `deactivate` command.
+
+### Database
+
+Now create a new Postgres database and format it with contents of `schema.sql`. How to do this varies a lot based on how Postgres has been installed to you system. Here is a basic example:
+
+```
+createdb <DBNAME>
+psql -d <DBNAME> -f schema.sql
+```
+
+Replace `<DBNAME>` with your database name of choise (`toothpaste` is recommended).
+
+**Note:** If you have installed Postgres with [local-pg](https://github.com/hy-tsoha/local-pg) tool, you need to pass extra option `-h /tmp/` to both of the example commands above.
+
+### Configuration
 
 Create a file called `.env` in the project root directory and set its contents as follows:
 
 ```
-DATABASE_URL=<POSTGRESQL>
+DATABASE_URL=<DBURL>
 SESSION_SECRET_KEY=<SESSIONSECRET>
 ```
 
-Replace `<POSTGRESQL>` with your database URL (propably something like `postgresql:///yourname`).
+Replace `<DBURL>` with your database URL (propably something like `postgresql:///dbname`).
 
 Replace `<SESSIONSECRET>` with a secret random string.
+
+### Usage
+
+Now ToothPaste is finally ready to use. Start local server by running
+
+```
+invoke start
+```
+
+Pylint style check can be run with
+
+```
+invoke lint
+```
+
+## Development
+
+You can find development documentation in [`docs/`](docs/) directory. Roadmap plan can be found on [wiki page](https://github.com/PyryL/toothpaste/wiki/Roadmap).
