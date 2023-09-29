@@ -63,7 +63,7 @@ def read_paste(token: str):
         paste_title=paste.title,
         paste_content=content,
         paste_delete_available=has_delete_permission,
-        voting_available=True,
+        voting_available=Permissions.can_vote(paste.publicity, paste.owner, logged_in_user_id),
         up_votes=votes["upvotes"],
         down_votes=votes["downvotes"],
         chat_token=token,

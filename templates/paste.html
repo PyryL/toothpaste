@@ -78,6 +78,17 @@
         </form>
     </div>
 </div>
+{% else %}
+<div class="row mb-3">
+    <div class="col-auto">
+        <i class="bi bi-hand-thumbs-up"></i>
+        {{ up_votes }}
+    </div>
+    <div class="col-auto">
+        <i class="bi bi-hand-thumbs-down"></i>
+        {{ down_votes }}
+    </div>
+</div>
 {% endif %}
 {% endblock %}
 {% block sidebar %}
