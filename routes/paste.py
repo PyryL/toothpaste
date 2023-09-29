@@ -77,6 +77,11 @@ def paste_post():
             paste.owner, logged_in_user_id):
             return "403 forbidden"
 
+    # validate inputs
+    if len(request.form["content"]) == 0 or len(request.form["title"]) == 0 or \
+       request.form["publicity"] not in ["listed", "unlisted", "private"]:
+       return "400 bad request"
+
     # encrypt paste content if encryption key is provided
     is_encrypted = request.form["encryption-key"] != ""
     if is_encrypted:

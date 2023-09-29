@@ -38,10 +38,10 @@
     </div>
     {% endif %}
     <div class="mb-2">
-        <input type="text" name="title" id="title" class="form-control" placeholder="Paste title" minlength="1" {{ fields_disabled }} value="{{ paste_title }}"><br>
+        <input type="text" name="title" id="title" class="form-control" placeholder="Paste title" required {{ fields_disabled }} value="{{ paste_title }}"><br>
     </div>
     <div class="mb-2">
-        <textarea name="content" class="form-control" rows="8" placeholder="Paste here..." {{ fields_disabled }}>{{ paste_content }}</textarea><br>
+        <textarea name="content" class="form-control" rows="8" placeholder="Paste here..." required {{ fields_disabled }}>{{ paste_content }}</textarea><br>
     </div>
     {% if is_modify %}
     <div class="mb-2">
