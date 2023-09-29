@@ -10,6 +10,9 @@ def new_chat_message():
     if token_info is None:
         return "404 paste not found"
 
+    if len(request.form["content"]) == 0:
+        return "400 bad request"
+
     ChatRepository.add_new_message(
         token_info["paste_id"],
         request.form["content"],

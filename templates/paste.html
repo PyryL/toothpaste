@@ -108,7 +108,7 @@
 <form method="POST" action="/chat">
     <input type="hidden" name="token" value="{{ chat_token }}">
     <div class="mb-2">
-        <textarea name="content" class="form-control" rows="3" placeholder="Message here..." minlength="1"></textarea>
+        <textarea name="content" class="form-control" rows="3" placeholder="Message here..." required></textarea>
     </div>
     <input type="submit" value="Send" class="btn btn-primary">
 </form>
