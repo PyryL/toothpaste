@@ -67,6 +67,12 @@ Now ToothPaste is finally ready to use. Start local server by running
 invoke start
 ```
 
+Run unit tests with
+
+```
+invoke test
+```
+
 Pylint style check can be run with
 
 ```

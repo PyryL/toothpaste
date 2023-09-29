@@ -7,3 +7,7 @@ def start(ctx):
 @task
 def lint(ctx):
     ctx.run("pylint repositories/ routes/ utilities/ app.py", pty=True)
+
+@task
+def test(ctx):
+    ctx.run("pytest tests/", pty=True)
