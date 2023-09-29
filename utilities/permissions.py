@@ -21,7 +21,8 @@ class Permissions:
     ) -> bool:
         # modify-level token is always required
         # in addition, user must be paste owner if the paste was not created anonymously
-        return token_level == "modify" and paste_owner_id == logged_in_user_id
+        return token_level == "modify" and \
+            (paste_owner_id is None or paste_owner_id == logged_in_user_id)
 
     @classmethod
     def can_delete_chat_message(
