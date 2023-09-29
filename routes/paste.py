@@ -11,12 +11,6 @@ def read_paste(token: str):
     token_info, paste = PasteRepository.get_paste_by_token(token)
     if token_info is None or paste is None:
         return "404 paste not found"
-    # token_info = TokenRepository.get_token_data(token)
-    # if token_info is None:
-    #     return "404 paste not found"
-    # paste = PasteRepository.get_paste(token_info["pasteId"])
-    # if paste is None:
-    #     return "404 paste not found"
 
     if not Permissions.can_view_paste(paste.publicity, paste.owner, logged_in_user_id):
         return "403 forbidden"
@@ -79,12 +73,6 @@ def paste_post():
         token_info, paste = PasteRepository.get_paste_by_token(request.form["modifyToken"])
         if token_info is None or paste is None:
             return "404 paste not found"
-        # token_info = TokenRepository.get_token_data(request.form["modifyToken"])
-        # if token_info is None:
-        #     return "404 paste not found"
-        # paste = PasteRepository.get_paste(token_info["pasteId"])
-        # if paste is None:
-        #     return "404 paste not found"
         if not Permissions.can_modify_paste(token_info["level"], paste.publicity,
             paste.owner, logged_in_user_id):
             return "403 forbidden"
@@ -139,12 +127,6 @@ def delete_paste(token: str):
     token_info, paste = PasteRepository.get_paste_by_token(token)
     if token_info is None or paste is None:
         return "404 paste not found"
-    # token_info = TokenRepository.get_token_data(token)
-    # if token_info is None:
-    #     return "404 paste not found"
-    # paste = PasteRepository.get_paste(token_info["pasteId"])
-    # if paste is None:
-    #     return "404 paste not found"
 
     if not Permissions.can_delete_paste(token_info["level"], paste.owner, logged_in_user_id):
         return "403 forbidden"
@@ -162,12 +144,6 @@ def regenerate_tokens(token: str):
     token_info, paste = PasteRepository.get_paste_by_token(token)
     if token_info is None or paste is None:
         return "404 paste not found"
-    # token_info = TokenRepository.get_token_data(token)
-    # if token_info is None:
-    #     return "404 paste not found"
-    # paste = PasteRepository.get_paste(token_info["pasteId"])
-    # if paste is None:
-    #     return "404 paste not found"
 
     if not Permissions.can_regenerate_tokens(token_info["level"], paste.owner, logged_in_user_id):
         return "403 forbidden"

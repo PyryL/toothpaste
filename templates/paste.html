@@ -6,9 +6,6 @@
         font-size: 1.2em;
         font-weight: 600;
     }
-    /* .chat-message {
-        border: 1px solid black;
-    } */
 </style>
 {% endblock %}
 {% block content %}
@@ -61,7 +58,6 @@
 <div class="row mb-3">
     <div class="col-auto">
         <form method="POST" action="/vote/up/{{ chat_token }}">
-            <!-- <input type="submit" value="Vote up" {{ voteDisabled }}> -->
             <button type="submit" class="btn btn-info">
                 <i class="bi bi-hand-thumbs-up"></i>
                 {{ up_votes }}
@@ -70,7 +66,6 @@
     </div>
     <div class="col-auto">
         <form method="POST" action="/vote/down/{{ chat_token }}">
-            <!-- <input type="submit" value="Vote down" {{ voteDisabled }}> -->
             <button type="submit" class="btn btn-info">
                 <i class="bi bi-hand-thumbs-down"></i>
                 {{ down_votes }}
