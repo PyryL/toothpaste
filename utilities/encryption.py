@@ -7,8 +7,7 @@ class Encryption:
     def _generate_key(cls, plaintext_key: str, salt: bytes) -> bytes:
         """Generates and returns a fixed-length key from the given plaintext password."""
 
-        # 16 bytes is the key length required by AES-128-GCM
-        key_length = 16
+        key_length = 32
 
         # recommended parameters for file encryption
         cost, block_size, parallelization = 2**20, 8, 1
