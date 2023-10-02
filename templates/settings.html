@@ -66,7 +66,7 @@
     </div>
 </p>
 <form method="POST" action="/settings/setup-2fa">
-    <input type="hidden" name="totp-secret" value="{{ totpSecret }}">
+    <input type="hidden" name="totp-secret" value="{{ totp_secret }}">
     <div class="form-group col-6">
         <label for="totp-code">Code:</label>
         <input type="text" name="totp-code" id="totp-code" class="form-control" placeholder="123456">
