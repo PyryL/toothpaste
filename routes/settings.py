@@ -29,6 +29,7 @@ def setup_2fa():
         return "401 not logged in"
 
     totp_secret, verification_code = request.form["totp-secret"], request.form["totp-code"]
+    print(f"totp setup {totp_secret} and {verification_code}")
 
     # check that user gave valid 2FA code
     if not TwoFactorAuthentication.validate_2fa_code(totp_secret, verification_code):

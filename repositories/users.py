@@ -1,4 +1,5 @@
 from sqlalchemy import text
+from werkzeug.security import check_password_hash, generate_password_hash
 from app import db
 
 class UserRepository:
@@ -8,19 +9,14 @@ class UserRepository:
         Returns user ID if correct, None otherwise.
         """
 
-        sql = """
-            SELECT id AS userid FROM users
-            WHERE username=:username AND password_hash=crypt(:password, password_hash)
-        """
-        parameters = {
-            "username": username,
-            "password": password
-        }
-        result = db.session.execute(text(sql), parameters)
-
+        sql = "SELECT id AS userid, password_hash FROM users WHERE username=:username"
+        result = db.session.execute(text(sql), { "username": username })
         if result.rowcount != 1:
             return None
-        return result.fetchone().userid
+        user = result.fetchone()
+        if not check_password_hash(user.password_hash, password):
+            return None
+        return user.userid
 
     @classmethod
     def add_new_user(cls, username: str, password: str) -> int:
@@ -37,12 +33,12 @@ class UserRepository:
 
         sql = """
             INSERT INTO users (username, password_hash)
-            VALUES (:username, crypt(:password, gen_salt('bf')))
+            VALUES (:username, :password_hash)
             RETURNING id
         """
         values = {
             "username": username,
-            "password": password
+            "password_hash": generate_password_hash(password)
         }
         result = db.session.execute(text(sql), values)
         db.session.commit()
