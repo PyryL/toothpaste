@@ -7,19 +7,9 @@
         font-weight: 600;
     }
 </style>
+<script type="text/javascript" src="/static/paste.js"></script>
 {% endblock %}
 {% block content %}
-{% if share_view_token and share_modify_token %}
-<p>
-    <label for="share-view">View:</label>
-    <input id="share-view" value="{{ share_view_token }}" disabled><br>
-    <label for="share-modify">Modify:</label>
-    <input id="share-modify" value="{{ share_modify_token }}" disabled>
-    <form method="POST" action="/paste/regenerate-tokens/{{ modify_token }}">
-        <input type="submit" value="Regenerate tokens">
-    </form>
-</p>
-{% endif %}
 <form method="POST" action="/paste">
     <input type="hidden" name="modifyToken" value="{{ modify_token }}">
     {% if is_modify %}
@@ -87,6 +77,28 @@
 {% endif %}
 {% endblock %}
 {% block sidebar %}
+{% if share_view_token and share_modify_token %}
+<h2>Share</h2>
+<div class="input-group mb-3">
+    <span class="input-group-text">View</span>
+    <input type="url" id="share-view" class="form-control" value="{{ share_view_token }}">
+    <button type="button" class="btn btn-outline-secondary" onclick="copyInput('share-view')">
+        <i class="bi bi-copy"></i>
+    </button>
+</div>
+<div class="input-group mb-3">
+    <span class="input-group-text">Modify</span>
+    <input type="url" id="share-modify" class="form-control" value="{{ share_modify_token }}">
+    <button type="button" class="btn btn-outline-secondary" onclick="copyInput('share-modify')">
+        <i class="bi bi-copy"></i>
+    </button>
+</div>
+<div class="mb-3">
+    <form method="POST" action="/paste/regenerate-tokens/{{ modify_token }}">
+        <input type="submit" class="btn btn-warning" value="Regenerate tokens">
+    </form>
+</div>
+{% endif %}
 {% if chat_token %}
 <h2>Chat</h2>
 {% for message in chat_messages %}
