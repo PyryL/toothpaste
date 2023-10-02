@@ -27,6 +27,10 @@ def read_paste(token: str):
         token_info["level"],
         paste.owner,
         logged_in_user_id)
+    can_regenerate_tokens = Permissions.can_regenerate_tokens(
+        token_info["level"],
+        paste.owner,
+        logged_in_user_id)
 
     if paste.is_encrypted and "decryption-key" not in request.form:
         return redirect(f"/ask-key/{token}")
@@ -50,6 +54,7 @@ def read_paste(token: str):
         is_modify=has_edit_permissions,
         share_view_token=view_token if has_edit_permissions else "",
         share_modify_token=modify_token if has_edit_permissions else "",
+        token_regeneration_available=can_regenerate_tokens,
         modify_token=token if has_edit_permissions else "",
         fields_disabled="" if has_edit_permissions else "disabled",
         paste_publicity=paste.publicity,

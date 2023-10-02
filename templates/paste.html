@@ -93,11 +93,13 @@
         <i class="bi bi-copy"></i>
     </button>
 </div>
+{% if token_regeneration_available %}
 <div class="mb-3">
     <form method="POST" action="/paste/regenerate-tokens/{{ modify_token }}">
         <input type="submit" class="btn btn-warning" value="Regenerate tokens">
     </form>
 </div>
+{% endif %}
 {% endif %}
 {% if chat_token %}
 <h2>Chat</h2>
