@@ -108,7 +108,7 @@
     <div class="card-body">
         <p class="card-text">{{ message.content }}</p>
         <p class="card-subtitle text-body-secondary">{{ message.creator if message.creator else '<i>Anonymous</i>' | safe }}</p>
-        <p class="card-text text-body-secondary">{{ message.creation_date }}</p>
+        <p class="card-text text-body-secondary">{{ format_date(message.creation_date) }}</p>
         {% if chat_remove_available %}
         <form method="POST" action="/chat/delete/{{ message.id }}">
             <input type="hidden" name="token" value="{{ chat_token }}">
