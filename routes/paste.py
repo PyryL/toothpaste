@@ -58,6 +58,7 @@ def read_paste(token: str):
         modify_token=token if has_edit_permissions else "",
         fields_disabled="" if has_edit_permissions else "disabled",
         paste_publicity=paste.publicity,
+        private_publicity_disabled="" if is_user_logged_in() else "disabled",
         encryption_key=request.form["decryption-key"] if paste.is_encrypted else "",
         paste_title=paste.title,
         paste_content=content,
@@ -121,6 +122,7 @@ def new_paste():
         header="New paste",
         is_modify=True,
         fields_disabled="",
+        private_publicity_disabled="" if is_user_logged_in() else "disabled",
         paste_title="",
         paste_content="",)
 

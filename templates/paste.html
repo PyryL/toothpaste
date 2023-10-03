@@ -18,7 +18,7 @@
         <select name="publicity" id="publicity" class="form-control" {{ fields_disabled }}>
             <option value="listed" {{ 'selected' if paste_publicity == 'listed' else '' }}>Listed on the front page</option>
             <option value="unlisted" {{ 'selected' if paste_publicity == 'unlisted' else '' }}>Anyone with link</option>
-            <option value="private" {{ 'selected' if paste_publicity == 'private' else '' }}>Only for you</option>
+            <option value="private" {{ 'selected' if paste_publicity == 'private' else '' }} {{ private_publicity_disabled }}>Only for you</option>
         </select>
     </div>
     <div class="mb-3">
