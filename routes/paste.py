@@ -105,7 +105,7 @@ def paste_post():
         "is_encrypted": is_encrypted
     }
     if is_modify:
-        PasteRepository.update_paste(token_info["pasteId"], paste)
+        PasteRepository.update_paste(token_info["paste_id"], paste)
         token = request.form["modifyToken"]
     else:
         paste_id = PasteRepository.add_new_paste(paste, logged_in_user_id)
