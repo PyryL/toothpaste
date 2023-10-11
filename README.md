@@ -1,5 +1,7 @@
 # ToothPaste
 
+Project for [Databases and web development](https://hy-tsoha.github.io/materiaali/) course at the University of Helsinki in autumn 2023.
+
 ## Description
 
 ToothPaste is a pastebin-like online service that allows its users to store text in an easily accessible and shareable way. It also allows interaction between users via chat messages and voting.
